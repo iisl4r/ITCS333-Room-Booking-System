@@ -20,11 +20,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die("Invalid username format. Only alphanumeric characters and underscores are allowed.");
     }
 
-    // Validate that the email is in the correct UoB format (using regex)
-    $emailPattern = '/^\d{9}@(uob\.edu\.bh|stu\.uob\.edu\.bh)$/';
-    if (!preg_match($emailPattern, $email)) {
-        die("Invalid UoB email format.");
+// Validate that the email is in the correct UoB format (using regex)
+$emailPattern = '/^(\d{9})@(uob\.edu\.bh|stu\.uob\.edu\.bh)$/';
+if (preg_match($emailPattern, $email, $matches)) {
+    // Extract the first 9 digits
+    $yearAndId = $matches[1];
+    
+    // Extract year (first 4 digits) and ID (last 5 digits)
+    $year = intval(substr($yearAndId, 0, 4));
+    $id = intval(substr($yearAndId, 4, 5));
+    
+    // Validate year and ID range
+    if (
+        !($year >= 2015 && $year <= 2024) || // Year is not between 2015 and 2024
+        !($id >= 1 && $id <= 11111)          // ID is not between 00001 and 11111
+    ) {
+        die("Invalid year or ID range in UoB email.");
     }
+} else {
+    // Invalid email format
+    die("Invalid UoB email format.");
+}
+
 
     // Check if the passwords match
     if ($password !== $secondpass) {
