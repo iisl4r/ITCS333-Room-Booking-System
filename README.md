@@ -37,8 +37,7 @@ Follow these steps to set up the project locally:
 
 3. Set up the database:
    - Open your MySQL management tool (like phpMyAdmin).
-   - Import the `sql/schema.sql` file to create the database tables.
-   - Optionally, import `sql/sample_data.sql` for sample data to test the system.
+   - Import the `sql/DB_Creation.sql` file to create the database tables.
 
 4. Configure database connection:
    - Open `php/db.php` and set your database connection details.
