@@ -10,3 +10,12 @@ CREATE TABLE users (
     role ENUM('admin', 'user') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE TABLE booking (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL ,
+    class_id INT NOT NULL,
+    booking_date date NOT NULL,
+    booking_time TIME NOT NULL,
+    booking_duration INT NOT NULL
+);
