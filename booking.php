@@ -29,14 +29,14 @@ if(!isset($_SESSION['user_id'] )){
                 <div class="card shadow">
                     <div class="card-body">
                         <h3 class="card-title">Book the Class</h3>
-                        <form method="POST" action="bookingexe.php">
+                        <form method="POST" action="/php/bookingexe.php">
                             <!-- Select Date -->
                             <div class="mb-3">
                                 <label for="date" class="form-label">Select Date</label>
                                 <input type="date" name="date" id="date" class="form-control" required>
                             </div>
                             <?php
-                            if(isset($_SESSION['data_error'])){
+                            if(isset($_SESSION['date_error'])){
                                 echo "<p style='color:red';>please input valid date</p>";
                                 unset( $_SESSION['date_error']);
                             }
