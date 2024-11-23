@@ -4,6 +4,7 @@ require 'db.php';
 //insure the user is logged in
 if(!isset($_SESSION['user_id'] )){
     header("..\login.php");
+    exit;
 }
 //insure the user input all data
 if($_SERVER['REQUEST_METHOD']==="POST"){
@@ -25,13 +26,22 @@ $currentDate=date("y-m-d");
 $currentTime=date("H:i");
 if(strtotime($date)<strtotime($currentDate)){
     $_SESSION['date_error']=true;
-    header("Location: booking.php");
-    exit;
 }
 
 //ensure valid time if the user chosed the same date of the cuurent time 
 if(strtotime($date)===strtotime($currentDate) && strtotime($time)<strtotime($currentTime)){
     $_SESSION["time_error"]=true;
+}
+//booking is allowed between 8:00 to 21:00
+$start=strtotime("8:00");
+$end=strtotime("21:00");
+$input_start=strtotime($time);
+$input_end=$input_start+($duration*60);
+if($input_start<$start || $input_end>$end){
+    $_SESSION["time_error"]=true;
+}
+//exit for invalid inputs
+if(isset($_SESSION["time_error"]) || isset($_SESSION['date_error'])){
     header("Location: booking.php");
     exit;
 }
@@ -63,7 +73,7 @@ if($conflict){
 else{
     //adding to database
     $time=new DateTime($time);
-    $time=$time->format('H:i:s'); //convert timr to format 'HH:MM:SS'
+    $time=$time->format('H:i:s'); //convert time to format 'HH:MM:SS'
     $add=$db->prepare("INSERT INTO booking (user_id, class_id, booking_date, booking_time, booking_duration) VALUES
     (:user_id, :class_id, :booking_date,:booking_time, :booking_duration)");
     $add->execute([

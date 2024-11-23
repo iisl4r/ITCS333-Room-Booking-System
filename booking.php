@@ -1,7 +1,7 @@
 <?php
 session_start();
 if(!isset($_SESSION['user_id'] )){
-    header("Location:login.php");
+    header("Location:auth.html");
     exit;
 }
 ?>
@@ -23,7 +23,7 @@ if(!isset($_SESSION['user_id'] )){
             <!-- Header -->
                 <div class="text-center">
                     <h1>Booking a class</h1>
-                    <p class="text-muted">you selceted class <?php// echo ".$_POST['classID']";?></p>
+                    <p class="text-muted">you selected class <?php// echo ".$_POST['classID']";?></p>
                 </div>
                 <!-- Booking Form -->
                 <div class="card shadow">
@@ -36,22 +36,22 @@ if(!isset($_SESSION['user_id'] )){
                                 <input type="date" name="date" id="date" class="form-control" required>
                             </div>
                             <?php
-                            if(isset($_SESSION['data_error']) && $_SESSION['date_error']==true){
+                            if(isset($_SESSION['data_error'])){
                                 echo "<p style='color:red';>please input valid date</p>";
-                                $_SESSION['date_error']=false;
+                                unset( $_SESSION['date_error']);
                             }
 
                             ?>
                            <!-- <input type='hidden' name='class' value=<?php// echo "$_POST['classID']"; ?> > -->
                             <!-- Select Time -->
                             <div class="mb-3">
-                                <label for="time" class="form-label">Select Time</label>
+                                <label for="time" class="form-label">Select Time (8:00 AM - 9:00 PM)</label>
                                 <input type="time" name="time" id="time" class="form-control" required>
                             </div>
                             <?php
-                            if(isset($_SESSION['time_error']) && $_SESSION['time_error']==true){
-                                echo "<p style='color:red;'>please input valid date</p>";
-                                $_SESSION['time_error']=false;
+                            if(isset($_SESSION['time_error'])){
+                                echo "<p style='color:red;'>please input valid time </p>";
+                                unset($_SESSION['time_error']);
                             }
 
                             ?>
@@ -67,13 +67,13 @@ if(!isset($_SESSION['user_id'] )){
                                 </select>
                             </div>
                             <?php
-                            if(isset($_SESSION['time_conflic']) && $_SESSION['time_conflic']==true){
+                            if(isset($_SESSION['time_conflic'])){
                                 echo "<p style='color:red;'>please input valid date, there is a conflict</p>";
-                                $_SESSION['time_conflic']=false;
+                                unset($_SESSION['time_conflic']);
                             }
-                            if(isset($_SESSION['successful_booking']) && $_SESSION['successful_booking']==true){
+                            if(isset($_SESSION['successful_booking'])){
                                 echo "<p style='color:green;'>succsseful booking!</p>";
-                                $_SESSION['successful_booking']=false;
+                                unset($_SESSION['successful_booking']);
                             }
 
                             ?>
