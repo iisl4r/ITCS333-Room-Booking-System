@@ -217,6 +217,155 @@ aside .sidebar {
     display: none;
 }
 
+#close-btn {
+    text-align: center;
+    width: 17rem;
+    margin-bottom: 20px;
+    color: red;
+}
+
+
+
+
+@media screen and (max-width: 1200px) {
+    .container {
+        width: 94%;
+        grid-template-columns: 7rem auto;
+    }
+
+    aside .sidebar h3 {
+        display: none;
+    }
+
+
+    main .widget-container {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    aside {
+        width: auto;
+    }
+
+    aside .sidebar a {
+        gap: 0;
+        margin-left: 0;
+        justify-content: center;
+    }
+
+    aside .sidebar a.active span {
+        margin-left: 0;
+    }
+}
+
 aside .close {
     display: none;
+}
+
+
+button {
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+
+
+@media screen and (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .top {
+        display: block;
+    }
+
+    aside {
+        position: fixed;
+        left: -100%;
+        background: var(--color-white);
+        width: 18rem;
+        z-index: 3;
+        box-shadow: 1rem 3rem 4rem var(--color-light);
+        height: 100vh;
+        padding-right: var(--card-padding);
+        display: none;
+        animation: showMenu 400ms ease forwards;
+    }
+
+    #menu-btn {
+        margin-left: -20px;
+        padding: 10px 20px;
+    }
+
+    @keyframes showMenu {
+        to {
+            left: 0;
+        }
+    }
+
+
+
+
+    aside .sidebar h3 {
+        display: inline;
+    }
+
+    aside .sidebar a {
+        gap: 1rem;
+    }
+
+
+
+
+    aside .close {
+        display: inline-block;
+        cursor: pointer;
+
+    }
+
+    .container {
+        gap: 0;
+    }
+
+    main {
+        margin-top: 0;
+        padding: 0 1rem;
+    }
+
+    #menu-btn {
+        margin-left: -20px;
+        padding: 10px 20px;
+    }
+
+    aside {
+        position: fixed;
+        left: -100%;
+        background: var(--color-white);
+        width: 18rem;
+        z-index: 3;
+        box-shadow: 1rem 3rem 4rem var(--color-light);
+        height: 100vh;
+        padding-right: var(--card-padding);
+        display: none;
+        animation: showMenu 400ms ease forwards;
+    }
+
+    aside .close {
+        display: inline-block;
+        cursor: pointer;
+    }
+
+
 }
