@@ -369,3 +369,76 @@ button {
 
 
 }
+
+
+
+
+main .widget-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-gap: 24px;
+    margin-top: 15px;
+}
+
+.widget-container {
+    justify-content: space-between;
+    width: 100%;
+}
+
+main .widget-container>div {
+    background: var(--color-white);
+    padding: var(--card-padding);
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+    border-radius: var(--card-border-radius);
+    margin-top: 1rem;
+    /* box-shadow: var(--box-shadow); */
+    transition: all 300ms ease;
+}
+
+.widget {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    min-width: 280px;
+}
+
+.value {
+    font-size: 2.8rem;
+    font-weight: bold;
+    color: #373737;
+}
+
+.extra {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.875rem;
+    margin-top: 5px;
+    color: #4caf50;
+}
+
+.icon {
+    width: 100px;
+    height: 100px;
+    background: #e8f5f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.icon svg {
+    width: 50px;
+    height: 50px;
+}
+
+.extra .manager {
+    color: #6c6c6c;
+    margin-top: 2px;
+}
+
+.manager {
+    font-size: 20px;
+}
