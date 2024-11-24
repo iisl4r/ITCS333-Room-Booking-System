@@ -5,19 +5,19 @@ require 'db.php';
 // Check if the request method is POST (form submission)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve and trim user input from the form
-    $username = trim($_POST['username']);
+    $fname = trim($_POST['fname']);
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $secondpass = $_POST['secondpass'];
 
     // Ensure that no fields are empty
-    if (empty($username) || empty($email) || empty($password) || empty($secondpass)) {
+    if (empty($fname) || empty($email) || empty($password) || empty($secondpass)) {
         die("All fields are required."); // Stop execution and display error message
     }
 
-    // Validate the username to only allow alphanumeric characters and underscores
-    if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-        die("Invalid username format. Only alphanumeric characters and underscores are allowed.");
+    // Validate the fname to only allow alpahbet characters and underscores
+    if (!preg_match('/^[a-zA-Z]+$/', $fname)) {
+        die("Invalid name format. Only alpahbet characters are allowed.");
     }
 
 // Validate that the email is in the correct UoB format (using regex)
@@ -48,9 +48,9 @@ if (preg_match($emailPattern, $email, $matches)) {
         die("Passwords do not match.");
     }
 
-    // Ensure that the username does not exceed 16 characters
-    if (strlen($username) > 16) {
-        die("The username length should not exceed 16 characters.");
+    // Ensure that the fname does not exceed 16 characters
+    if (strlen($fname) > 16) {
+        die("The name length should not exceed 16 characters.");
     }
 
     // Validate the password requirements: at least 8 characters, 1 uppercase letter, and 1 number
@@ -63,11 +63,11 @@ if (preg_match($emailPattern, $email, $matches)) {
 
     try {
         // Prepare an SQL statement to insert the new user into the 'users' table
-        $stmt = $db->prepare("INSERT INTO users (username, email, password_hash) VALUES (:username, :email, :password_hash)");
+        $stmt = $db->prepare("INSERT INTO users (fname, email, password_hash) VALUES (:fname, :email, :password_hash)");
 
         // Execute the statement with user data
         $stmt->execute([
-            ':username' => $username,
+            ':fname' => $fname,
             ':email' => $email,
             ':password_hash' => $passwordHash,
         ]);
@@ -78,9 +78,9 @@ if (preg_match($emailPattern, $email, $matches)) {
     } catch (PDOException $e) {
         // Handle database errors (like unique constraint violation)
         if ($e->getCode() == 23000) {
-            // Check if the error is due to a duplicate username
-            if (str_contains($e->getMessage(), 'username')) {
-                die("The username is already taken.");
+            // Check if the error is due to a duplicate fname
+            if (str_contains($e->getMessage(), 'fname')) {
+                die("The name is already taken.");
             // Check if the error is due to a duplicate email
             } elseif (str_contains($e->getMessage(), 'email')) {
                 die("The email is already registered.");
