@@ -540,3 +540,62 @@ h1 {
     font-size: 24px;
     margin-bottom: 20px;
 }
+
+.fedback-1 {
+    display: flex;
+    margin-top: 20px;
+    flex-direction: column;
+    background-color: #FAFAFA;
+    border-radius: 14px;
+    padding: 15px;
+}
+
+.feedback .profile {
+    display: flex;
+    align-items: center;
+}
+
+.rat-contr {
+    text-align: right;
+    margin-top: -20px;
+}
+
+.rating .rat-contr .fa-star {
+    font-size: 20px;
+}
+
+.rating .rat-contr .fa-star {
+    color: #CEC9C1;
+}
+
+.rating .rat-contr .fa-star.checked {
+    color: #FFAC33;
+}
+
+.feedback .date {
+    font-size: 12px;
+    color: #888888;
+    text-align: left;
+}
+
+.feedback .profile .name {
+    font-weight: bold;
+    font-size: 18px;
+    color: #000000;
+}
+
+.feedback .profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.feedback .review {
+    font-size: 15px;
+    line-height: 1.6;
+    font-weight: 600;
+    color: #555555;
+    margin-bottom: 10px;
+}
