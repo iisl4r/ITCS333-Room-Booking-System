@@ -61,7 +61,7 @@
         </aside>
 
 
-
+        <script src="../js/admin.js"></script>
         <?php include "../views/footer.php" ?>
 </body>
 
