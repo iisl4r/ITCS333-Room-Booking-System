@@ -165,6 +165,56 @@
                             <div class="name">Elon Musk</div>
                         </div>
                     </div>
+
+                    <div class="feedback">
+                        <h1>Recent Feedback</h1>
+                        <div class="fedback-1">
+                            <div class="profile">
+                                <img src="../img/users/elon-musk.jpg" alt="Elon Musk">
+                                <div class="name">Elon Musk</div>
+                            </div>
+                            <div class="rating">
+                                <div class="rat-contr">
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x "></span>
+                                </div>
+                            </div>
+                            <div class="review">
+                                Wi-Fi slower than a SpaceX rocket launch. Room was fine, but can we get a Tesla charger
+                                next
+                                time? 🚀🔋
+                            </div>
+                            <div class="date">Nov 17, 2024</div>
+                        </div>
+
+
+                        <div class="fedback-1">
+                            <div class="profile">
+                                <img src="../img/users/the-rock.jpg" alt="The Rock">
+                                <div class="name">The Rock</div>
+                            </div>
+                            <div class="rating">
+                                <div class="rat-contr">
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x checked"></span>
+                                    <span class="fa fa-star fa-3x "></span>
+                                    <span class="fa fa-star fa-3x"></span>
+                                </div>
+                            </div>
+                            <div class="review">
+                                Room was great, but where’s the gym? Also, the Wi-Fi? Not fast enough to stream Fast &
+                                Furious.
+                            </div>
+                            <div class="date">Nov 12, 2024</div>
+                        </div>
+
+
+                    </div>
+                </div>
         </main>
     </div>
 
