@@ -215,10 +215,164 @@
 
                     </div>
                 </div>
-        </main>
+
+            </div>
+
+
+            <div class="content-section" id="rooms-section">
+
+                <div class="add">
+                    <a href="#" class="addroom" id="addRoomBtn">Add Room</a>
+                </div>
+                <!-- 
+-->
+                <div id="popupForm" class="popup-form">
+                    <div class="popup-content">
+                        <form id="roomForm">
+                            <label for="roomNumber">Room Number</label>
+                            <input type="text" id="roomNumber" name="roomNumber" placeholder="Enter room number">
+
+                            <label for="roomcapacity">Room Capacity</label>
+                            <input type="text" id="roomcapacit" name="roomcapacit" placeholder="Enter room capacity">
+
+                            <label for="equipment">Room Equipment</label>
+                            <input type="text" id="equipment" name="equipment" placeholder="Enter room Equipments">
+
+                            <label for="time">Time</label>
+                            <input type="text" id="time" name="time" placeholder="Enter room time">
+
+                            <label for="roomFloor">Room Floor</label>
+                            <input type="text" id="roomFloor" name="roomFloor" placeholder="Enter floor no">
+
+                            <label for="roomStatus">Room Status</label>
+                            <input type="text" id="roomStatus" name="roomStatus" placeholder="Enter room status">
+
+                            <div class="popup-buttons">
+                                <button type="button" id="cancelBtn" class="cancel">Cancel</button>
+                                <button type="submit" class="save">Add</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Edit Room Form -->
+                <div id="editRoomForm" class="popup-form">
+                    <div class="popup-content">
+
+                        <form id="editForm">
+                            <label for="editRoomNumber">Room Number</label>
+                            <input type="text" id="editRoomNumber" name="roomNumber" readonly>
+
+                            <label for="editRoomCapacity">Room Capacity</label>
+                            <input type="text" id="editRoomCapacity" name="roomCapacity"
+                                placeholder="Enter room capacity">
+
+                            <label for="editEquipment">Room Equipment</label>
+                            <input type="text" id="editEquipment" name="equipment" placeholder="Enter room equipment">
+
+                            <label for="editTime">Time</label>
+                            <input type="text" id="editTime" name="time" placeholder="Enter room time">
+
+                            <label for="editRoomFloor">Room Floor</label>
+                            <input type="text" id="editRoomFloor" name="roomFloor" placeholder="Enter floor no">
+
+                            <label for="editRoomStatus">Room Status</label>
+                            <input type="text" id="editRoomStatus" name="roomStatus" placeholder="Enter room status">
+
+                            <div class="popup-buttons">
+                                <button type="button" id="editCancelBtn" class="cancel">Cancel</button>
+                                <button type="submit" class="save">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+
+                <h1>Room Mangement</h1>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>Room No</th>
+                            <th>Capacity</th>
+                            <th>Equipment</th>
+                            <th>Room floor</th>
+                            <th>Requested By</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th></th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01</td>
+                            <td>25</td>
+                            <td>Projector</td>
+                            <td>Floor2</td>
+                            <td>Barbie</td>
+                            <td>12:00 PM - 01:00 PM</td>
+                            <td>
+                                Confirmed
+                            </td>
+                            <td>
+                                <span class="material-symbols-sharp more-options">more_vert</span>
+                                <div class="context-menu hidden">
+                                    <a href="#" class="edit" data-room-index="1">Edit</a>
+                                    <a href="#" class="delete">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+
+
+                        <tr>
+                            <td>02</td>
+                            <td>30</td>
+                            <td>Projector</td>
+                            <td>Floor1</td>
+                            <td>Elon Musk</td>
+                            <td>02:00 PM - 03:00 PM</td>
+                            <td>
+                                Pending
+                            </td>
+                            <td>
+                                <span class="material-symbols-sharp more-options">more_vert</span>
+                                <div class="context-menu hidden">
+                                    <a href="#" class="edit" data-room-index="2">Edit</a>
+                                    <a href="#" class="delete">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>03</td>
+                            <td>22</td>
+                            <td>Projector</td>
+                            <td>Floor2</td>
+                            <td>SpongeBob</td>
+                            <td>01:00 PM - 03:00 PM</td>
+                            <td>
+                                Cancelled
+                            </td>
+                            <td>
+                                <span class="material-symbols-sharp more-options">more_vert</span>
+                                <div class="context-menu hidden">
+                                    <a href="#" class="edit" data-room-index="3">Edit</a>
+                                    <a href="#" class="delete">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+    </div>
+
+    </main>
     </div>
 
     <script src="../js/admin.js"></script>
+
     <?php include "../views/footer.php" ?>
 </body>
 

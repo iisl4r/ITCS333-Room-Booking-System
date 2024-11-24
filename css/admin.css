@@ -270,18 +270,6 @@ button {
 }
 
 
-
-
-
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-
-
 @media screen and (max-width: 768px) {
     .container {
         grid-template-columns: 1fr;
@@ -304,10 +292,7 @@ button {
         animation: showMenu 400ms ease forwards;
     }
 
-    #menu-btn {
-        margin-left: -20px;
-        padding: 10px 20px;
-    }
+
 
     @keyframes showMenu {
         to {
@@ -349,23 +334,6 @@ button {
         padding: 10px 20px;
     }
 
-    aside {
-        position: fixed;
-        left: -100%;
-        background: var(--color-white);
-        width: 18rem;
-        z-index: 3;
-        box-shadow: 1rem 3rem 4rem var(--color-light);
-        height: 100vh;
-        padding-right: var(--card-padding);
-        display: none;
-        animation: showMenu 400ms ease forwards;
-    }
-
-    aside .close {
-        display: inline-block;
-        cursor: pointer;
-    }
 
 
 }
@@ -598,4 +566,247 @@ h1 {
     font-weight: 600;
     color: #555555;
     margin-bottom: 10px;
+}
+
+
+
+
+.content-section.active {
+    display: block;
+}
+
+.content-section {
+    display: none;
+}
+
+
+#rooms-section,
+#schedules-section {
+    background-color: white;
+    margin-top: 11px;
+    padding: 14px 30px;
+    height: auto;
+    border-radius: 20px;
+}
+
+.content-table {
+    margin: 25px 0;
+    font-size: 1.7em;
+    border-collapse: collapse;
+    border-radius: 5px 5px 0 0;
+    overflow: hidden;
+    width: 100%;
+}
+
+.content-table tbody tr {
+    border-bottom: 1px solid #E8F1FD;
+}
+
+.content-table thead tr th {
+    text-align: start;
+}
+
+
+
+.content-table thead tr th:nth-child(1) {
+    width: 7%;
+}
+
+.content-table thead tr th:nth-child(2) {
+    width: 5%;
+}
+
+.content-table thead tr th:nth-child(3) {
+    width: 5%;
+}
+
+.content-table thead tr th:nth-child(4) {
+    width: 8%;
+}
+
+.content-table thead tr th:nth-child(5) {
+    width: 20%;
+}
+
+.content-table thead tr th:nth-child(6) {
+    width: 20%;
+}
+
+.content-table thead tr th:nth-child(7) {
+    width: 10%;
+}
+
+.content-table thead tr th:last-child {
+    width: 1%;
+}
+
+.content-table th,
+content-table td {
+    padding: 13px 15px;
+    font-size: 1.2rem;
+}
+
+.content-table thead tr {
+    background-color: #F7F9FC;
+    color: #667085;
+
+
+}
+
+.content-table tbody tr td {
+    color: #5D6679;
+}
+
+.content-table tbody tr td {
+    padding: 25px 15px;
+    text-align: start;
+    font-size: 1.2rem;
+}
+
+.content-table tbody tr td:nth-child(1) {
+    color: #2B2F38;
+}
+
+.add {
+    padding-top: 20px;
+}
+
+.add .addroom,
+.addschedule {
+    text-decoration: none;
+    color: #242424;
+    background-color: #F0F0F0;
+    padding: 10px 20px;
+    width: fit-content;
+    font-weight: 500;
+    transition: all 450ms ease;
+}
+
+.addroom {
+
+    background-color: #007BFF;
+    color: white;
+
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.addroom,
+.addschedule {
+    display: flex;
+    justify-self: flex-end;
+    align-items: end;
+    border-radius: 10px;
+}
+
+.addroom:hover {
+    background-color: #0056b3;
+}
+
+.add .addroom:hover,
+.add .addschedule:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+.context-menu {
+    position: absolute;
+    background-color: #ffffff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 5px 0;
+    z-index: 1000;
+    display: none;
+    min-width: 120px;
+}
+
+.context-menu a {
+    display: block;
+    padding: 8px 12px;
+    text-decoration: none;
+    color: #333;
+    font-size: 14px;
+    transition: all 300ms ease;
+}
+
+.context-menu a:hover {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.context-menu a:last-child:hover {
+    background-color: var(--color-danger);
+    color: white;
+}
+
+
+.popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#rooms-section h1 {
+    text-align: start;
+    margin-top: -30px;
+    margin-bottom: 30px;
+    width: fit-content;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button.save {
+    background-color: #007BFF;
+    color: white;
+    transition: all 300ms ease;
+}
+
+button.cancel {
+    border: 1px solid #ccc;
+    background-color: white;
+    transition: all 300ms ease;
+}
+
+.popup-form {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
