@@ -583,7 +583,7 @@ h1 {
 #rooms-section,
 #schedules-section {
     background-color: white;
-    margin-top: 11px;
+    margin-top: 30px;
     padding: 14px 30px;
     height: auto;
     border-radius: 20px;
@@ -809,4 +809,13 @@ button.cancel {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+}
+
+.feedback {
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+    color: #333333;
+    margin-top: 30px;
 }
