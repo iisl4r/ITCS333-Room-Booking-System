@@ -146,6 +146,25 @@
 
 
                 </div>
+                <div class="main-container">
+                    <div class="booking-section">
+                        <h1>Upcoming Bookings</h1>
+                        <div class="booking confirmed">
+                            <div class="room">Room A - 20 Nov, 2:00 PM</div>
+                            <div class="status">Confirmed</div>
+                            <div class="name">Mohamed Salah</div>
+                        </div>
+                        <div class="booking pending">
+                            <div class="room">Room B - 21 Nov, 11:00 AM</div>
+                            <div class="status">Pending</div>
+                            <div class="name">Abdullah Yasser</div>
+                        </div>
+                        <div class="booking cancelled">
+                            <div class="room">Room C - 22 Nov, 1:00 PM</div>
+                            <div class="status">Cancelled</div>
+                            <div class="name">Elon Musk</div>
+                        </div>
+                    </div>
         </main>
     </div>
 
