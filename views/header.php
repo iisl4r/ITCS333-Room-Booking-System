@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp">
 <link rel="stylesheet" href="/ITCS333-Room-Booking-System/css/header.css">
+
 <header class="sticky">
     <div class="logo">
         <span class="material-icons">
@@ -28,3 +29,6 @@
         </span>
     </div>
 </header>
+
+
+<script src="/ITCS333-Room-Booking-System/js/header.js"></script>
