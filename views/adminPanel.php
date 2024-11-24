@@ -5,13 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel</title>
-    <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp" />
+    <link rel="stylesheet" href="../css/admin.css">
 
 </head>
 
 <body>
+    <?php include "../views/header.php" ?>
     <div class="container">
         <div class="top">
             <button id="menu-btn">
@@ -59,6 +60,9 @@
             </div>
         </aside>
 
+
+
+        <?php include "../views/footer.php" ?>
 </body>
 
 </html>
