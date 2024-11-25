@@ -18,9 +18,6 @@ $time=($_POST['time']);
 $duration=intval($_POST['duration']);
 //$class=$_POST['class'];
 
-//start and end time
-$start_time=strtotime($date.' '. $time);
-$end_time=$start_time+($duration*60);
 //insure valid date
 $currentDate=date("y-m-d");
 $currentTime=date("H:i");
@@ -42,7 +39,7 @@ if($input_start<$start || $input_end>$end){
 }
 //exit for invalid inputs
 if(isset($_SESSION["time_error"]) || isset($_SESSION['date_error'])){
-    header("Location: booking.php");
+    header("Location: ../booking.php");
     exit;
 }
 
@@ -50,6 +47,11 @@ if(isset($_SESSION["time_error"]) || isset($_SESSION['date_error'])){
 $query=$db->prepare("SELECT * FROM booking WHERE class_id = :classId and booking_date= :inputDate");
 $query->execute([":classId" => $class, ":inputDate" => $date]);
 $data=$query->fetchAll(PDO::FETCH_ASSOC);
+
+
+//start and end time
+$start_time=strtotime($date.' '. $time);
+$end_time=$start_time+($duration*60);
 //checking for conflict
 $conflict=false;
 if(!empty($data)){
@@ -67,24 +69,29 @@ if(!empty($data)){
 
 if($conflict){
     $_SESSION['time_conflic']=true;
-    header("Location: booking.php");
+    header("Location: ../booking.php");
     exit;
 }
 else{
     //adding to database
     $time=new DateTime($time);
     $time=$time->format('H:i:s'); //convert time to format 'HH:MM:SS'
-    $add=$db->prepare("INSERT INTO booking (user_id, class_id, booking_date, booking_time, booking_duration) VALUES
-    (:user_id, :class_id, :booking_date,:booking_time, :booking_duration)");
+    $ob=new DateTime($time);
+    $ob->add(new DateInterval('PT'.$duration.'M'));
+    $end=$ob->format('H:i:s');
+    $add=$db->prepare("INSERT INTO booking (user_id, class_id, booking_date, start_time, duration, end_time, booking_status) VALUES
+    (:user_id, :class_id, :booking_date,:booking_time, :booking_duration, :end_time,:booking_status)");
     $add->execute([
         ":user_id"=> $_SESSION['user_id'],
         "class_id" => $class,
         ":booking_date"=>$date,
-        "booking_time" =>$time ,
-        "booking_duration"=>$duration 
+        ":booking_time" =>$time ,
+        ":booking_duration"=>$duration ,
+        ":end_time"=>$end,
+        "booking_status"=>"active"
     ]);
     $_SESSION['successful_booking']=true;
-    header("Location: booking.php");
+    header("Location: ../booking.php");
     exit;
 }
 

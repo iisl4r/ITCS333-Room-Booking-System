@@ -29,7 +29,7 @@ if(!isset($_SESSION['user_id'] )){
                 <div class="card shadow">
                     <div class="card-body">
                         <h3 class="card-title">Book the Class</h3>
-                        <form method="POST" action="/php/bookingexe.php">
+                        <form method="POST" action="./php/bookingexe.php">
                             <!-- Select Date -->
                             <div class="mb-3">
                                 <label for="date" class="form-label">Select Date</label>

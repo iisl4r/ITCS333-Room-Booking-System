@@ -16,6 +16,8 @@ CREATE TABLE booking (
     user_id INT NOT NULL ,
     class_id INT NOT NULL,
     booking_date date NOT NULL,
-    booking_time TIME NOT NULL,
-    booking_duration INT NOT NULL
+    start_time TIME NOT NULL,
+    duration INT NOT NULL,
+    end_time TIME NOT NULL,
+    booking_status VARCHAR(10) NOT NULL
 );

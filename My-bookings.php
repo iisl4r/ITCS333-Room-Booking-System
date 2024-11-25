@@ -4,7 +4,7 @@ if(!isset($_SESSION['user_id'])){
     header("Location:auth.html");
     exit;
 }
-require "db.php";
+require "./php/db.php";
 $user_id=$_SESSION['user_id'];
 
 ?>
@@ -47,8 +47,9 @@ $user_id=$_SESSION['user_id'];
                                 <h5 class="card-title">##after rooms table##</h5>
                                 <p class="card-text">
                                 <strong>Date: </strong><?php echo $record['booking_date']; ?><br>
-                                <strong>Time: </strong><?php echo $record['booking_time']; ?><br>
-                                <strong>Duration: </strong><?php echo $record['booking_duration']; ?>
+                                <strong>Time: </strong><?php echo $record['start_time']; ?><br>
+                                <strong>Duration: </strong><?php echo $record['duration']; ?></br>
+                                <strong>Status: </strong><?php echo $record['booking_status']; ?>
                                 </p>
                                 <div class="forms">
                                     <!--action buttons-->

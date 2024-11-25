@@ -11,9 +11,9 @@ if($_SERVER['REQUEST_METHOD']==="POST"){
 }
  
 require "db.php";
-$query=$db->prepare("DELETE FROM booking WHERE id =:id ");
+$query=$db->prepare("UPDATE booking SET booking_status='canceled' WHERE id =:id ");
 $query->execute(["id" => $_POST['booking-id']]);
-header("Location:booked-rooms-view.php");
+header("Location:../my-bookings.php");
 
 
 ?>
