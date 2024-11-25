@@ -6,57 +6,54 @@ require 'db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Trim any extra spaces from the fname input
     $fname = trim($_POST['fname']);
-    
-    // Get the password from the form input
     $password = $_POST['password'];
 
     // Check if both fname and password are provided
     if (empty($fname) || empty($password)) {
-        die("Both fname and password are required.");
+        $_SESSION['login_msg'] = "Both name and password are required.";
+        header("Location: ../auth.php");
+        exit;
     }
 
-    // Validate that the fname only contains alpahbet characters and underscores
+    // Validate that the fname only contains alphabet characters
     if (!preg_match('/^[a-zA-Z]+$/', $fname)) {
-        die("Invalid name format. Only alpahbet characters and underscores are allowed.");
+        $_SESSION['login_msg'] = "Invalid name format. Only alphabet characters are allowed.";
+        header("Location: ../auth.php");
+        exit;
     }
 
     try {
         // Prepare a SQL statement to fetch the user from the database by fname
         $stmt = $db->prepare("SELECT * FROM users WHERE fname = :fname");
-        
-        // Execute the query with the provided fname
         $stmt->execute([':fname' => $fname]);
-        
-        // Fetch the user record as an associative array
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Check if a user was found and if the password matches the hashed password in the database
+        // Check if a user was found and if the password matches
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Regenerate the session ID to prevent session fixation attacks
             session_regenerate_id(true);
-
-            // Store user details in the session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['fname'] = $user['fname'];
             $_SESSION['role'] = $user['role'];
 
-            // Set a cookie to store the fname for 2 minutes
-            setcookie('user', $user['fname'], time() + (60 * 2), "/"); // 2 minutes
+            // Set a cookie for the fname
+            setcookie('user', $user['fname'], time() + (60 * 2), "/");
 
-            // Redirect user based on their role (admin or regular user)
+            // Redirect based on role
             if ($user['role'] === 'admin') {
-                header("Location: /ITCS333-Room-Booking-System/indexAdmin.php");
+                header("Location: ../indexAdmin.php");
             } else {
-                header("Location: /ITCS333-Room-Booking-System/index.php");
+                header("Location: ../index.php");
             }
-            exit(); // Ensure no further code is executed after redirection
+            exit;
         } else {
-            // If fname or password is incorrect, display an error message
-            die("Invalid name or password.");
+            $_SESSION['login_msg'] = "Invalid name or password.";
+            header("Location: ../auth.php");
+            exit;
         }
     } catch (PDOException $e) {
-        // Catch any database connection errors and display a generic error message
-        die("An unexpected error occurred. Please try again later.");
+        $_SESSION['login_msg'] = "An unexpected error occurred. Please try again later.";
+        header("Location: ../auth.php");
+        exit;
     }
 }
 ?>
