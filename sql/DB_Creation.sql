@@ -21,3 +21,6 @@ CREATE TABLE booking (
     end_time TIME NOT NULL,
     booking_status VARCHAR(10) NOT NULL
 );
+
+INSERT INTO booking (user_id, class_id, booking_date, start_time, duration, end_time, booking_status) VALUES(2,2,'2024-11-30','8:00:00',60,'9:00:00','active');
+INSERT INTO booking (user_id, class_id, booking_date, start_time, duration, end_time, booking_status) VALUES(3,2,'2024-12-12','13:00:00',60,'14:00:00','canceled');
