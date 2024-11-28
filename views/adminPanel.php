@@ -115,10 +115,19 @@
 
                         </div>
                         <div class="content">
-                            <div class="value">2</div>
+                            <?php
+                            include "../php/db.php";
+                            $totalBookingsQuery = "SELECT COUNT(*) AS total FROM booking";
+                            $stmt = $db->prepare($totalBookingsQuery);
+                            $stmt->execute();
+                            $totalBookingsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $totalBookings = $totalBookingsResult['total'];
+                            ?>
+                            <div class="value"><?= $totalBookings ?></div>
                             <div class="extra">
+
                                 <div class="manager">Total Bookings</div>
-                                <div>+4% (30 days)</div>
+
 
                             </div>
                         </div>
@@ -147,24 +156,56 @@
 
                 </div>
                 <div class="main-container">
+                    <?php
+                    // Include the database connection
+                    include '../php/db.php';
+
+                    // Fetch upcoming bookings from the database
+                    try {
+                        $query = "SELECT 
+                b.booking_date, 
+                b.start_time, 
+                b.booking_status, 
+                u.fname AS user_name, 
+                b.class_id 
+                FROM booking b
+                JOIN users u ON b.user_id = u.id
+                WHERE b.booking_date >= CURDATE()
+                ORDER BY b.booking_date, b.start_time ASC";
+
+                        $stmt = $db->prepare($query);
+                        $stmt->execute();
+                        $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } catch (PDOException $e) {
+                        die("Failed to fetch bookings: " . $e->getMessage());
+                    }
+                    ?>
+
                     <div class="booking-section">
                         <h1>Upcoming Bookings</h1>
-                        <div class="booking confirmed">
-                            <div class="room">Room A - 20 Nov, 2:00 PM</div>
-                            <div class="status">Confirmed</div>
-                            <div class="name">Mohamed Salah</div>
-                        </div>
-                        <div class="booking pending">
-                            <div class="room">Room B - 21 Nov, 11:00 AM</div>
-                            <div class="status">Pending</div>
-                            <div class="name">Abdullah Yasser</div>
-                        </div>
-                        <div class="booking cancelled">
-                            <div class="room">Room C - 22 Nov, 1:00 PM</div>
-                            <div class="status">Cancelled</div>
-                            <div class="name">Elon Musk</div>
-                        </div>
+
+                        <?php if (!empty($bookings)): ?>
+                            <?php foreach ($bookings as $booking): ?>
+                                <?php
+                                // Determine the CSS class and status text based on booking_status
+                                $statusClass = strtolower($booking['booking_status']) === 'active' ? 'confirmed' : 'cancelled';
+                                $statusText = ucfirst(strtolower($booking['booking_status']));
+                                ?>
+                                <div class="booking <?= $statusClass ?>">
+                                    <div class="room">
+                                        Room <?= chr(64 + $booking['class_id']) ?> -
+                                        <?= date("d M, g:i A", strtotime($booking['booking_date'] . ' ' . $booking['start_time'])) ?>
+                                    </div>
+                                    <div class="status"><?= $statusText ?></div>
+                                    <div class="name"><?= htmlspecialchars($booking['user_name']) ?></div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <p>No upcoming bookings.</p>
+                        <?php endif; ?>
                     </div>
+
+
 
                     <div class="feedback">
                         <h1>Recent Feedback</h1>
