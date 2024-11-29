@@ -17,11 +17,27 @@
         </ul>
     </nav>
     <div class="auth">
-        <a href="#" class="sign-in">Sign in
-            <span class="material-symbols-sharp">
-                arrow_right_alt
-            </span>
-        </a>
+        <?php
+        // Start the session to check if the user is logged in
+        session_start();
+
+        // Check if the user is signed in (session contains user_id)
+        if (isset($_SESSION['user_id'])):
+        ?>
+            <!-- Sign Out Link -->
+            <a href="../php/logout.php" class="sign-in">Logout
+                <span class="material-symbols-sharp">
+                    logout
+                </span>
+            </a>
+        <?php else: ?>
+            <!-- Sign In Link -->
+            <a href="../auth.html" class="sign-in">Sign in
+                <span class="material-symbols-sharp">
+                    arrow_right_alt
+                </span>
+            </a>
+        <?php endif; ?>
     </div>
     <div class="hamburger" id="hamburger">
         <span class="material-symbols-sharp">
