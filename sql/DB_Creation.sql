@@ -17,7 +17,7 @@ CREATE TABLE rooms (
     department VARCHAR(30) NOT NULL,
     room_floor INT NOT NULL,
     capacity INT NOT NULL,
-    equipment TEXT NOT NULL,
+    equipments TEXT NOT NULL,
     available_start TIME NOT NULL DEFAULT '08:00:00',
     available_end TIME NOT NULL DEFAULT '21:00:00',
     room_number VARCHAR(30) NOT NULL UNIQUE,
@@ -25,7 +25,7 @@ CREATE TABLE rooms (
 );
 
 -- IS Department Rooms
-INSERT INTO rooms (capacity, equipment, available_start, available_end, room_number, department, room_floor, room_status)
+INSERT INTO rooms (capacity, equipments, available_start, available_end, room_number, department, room_floor, room_status)
 VALUES
 (25, "Projector, Whiteboard", "08:00:00", "21:00:00", "S40-2008", "IS", 2, "Available"),
 (28, "Projector", "08:00:00", "21:00:00", "S40-1006", "IS", 1, "Occupied"),
@@ -37,7 +37,7 @@ VALUES
 (24, "Projector, Monitors", "08:00:00", "21:00:00", "S40-1008", "IS", 1, "Occupied");
 
 -- CS Department Rooms
-INSERT INTO rooms (capacity, equipment, available_start, available_end, room_number, department, room_floor, room_status)
+INSERT INTO rooms (capacity, equipments, available_start, available_end, room_number, department, room_floor, room_status)
 VALUES
 (29, "Whiteboard, Laptop, Microphone", "08:00:00", "21:00:00", "S40-2045", "CS", 2, "Available"),
 (27, "Whiteboard, Speaker", "08:00:00", "21:00:00", "S40-1048", "CS", 1, "Occupied"),
@@ -49,7 +49,7 @@ VALUES
 (22, "Whiteboard, Projector", "08:00:00", "21:00:00", "S40-1050", "CS", 1, "Occupied");
 
 -- NE Department Rooms
-INSERT INTO rooms (capacity, equipment, available_start, available_end, room_number, department, room_floor, room_status)
+INSERT INTO rooms (capacity, equipments, available_start, available_end, room_number, department, room_floor, room_status)
 VALUES
 (20, "Laptop, Projector, Speaker", "08:00:00", "21:00:00", "S40-2086", "NE", 2, "Available"),
 (23, "Laptop, Microphone", "08:00:00", "21:00:00", "S40-1086", "NE", 1, "Occupied"),
