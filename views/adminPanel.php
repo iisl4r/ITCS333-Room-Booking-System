@@ -287,23 +287,33 @@
                 <div id="popupForm" class="popup-form">
                     <div class="popup-content">
                         <form id="roomForm">
-                            <label for="roomNumber">Room Number</label>
-                            <input type="text" id="roomNumber" name="roomNumber" placeholder="Enter room number">
+                            <label for="roomId">Room ID</label>
+                            <input type="text" id="roomId" name="roomId">
 
-                            <label for="roomcapacity">Room Capacity</label>
-                            <input type="text" id="roomcapacit" name="roomcapacit" placeholder="Enter room capacity">
+                            <label for="department">Department</label>
+                            <input type="text" id="department" name="department" placeholder="Enter department name">
+
+                            <label for="roomCapacity">Room Capacity</label>
+                            <input type="text" id="roomCapacity" name="roomCapacity" placeholder="Enter room capacity">
 
                             <label for="equipment">Room Equipment</label>
-                            <input type="text" id="equipment" name="equipment" placeholder="Enter room Equipments">
-
-                            <label for="time">Time</label>
-                            <input type="text" id="time" name="time" placeholder="Enter room time">
+                            <input type="text" id="equipment" name="equipment" placeholder="Enter room equipment">
 
                             <label for="roomFloor">Room Floor</label>
                             <input type="text" id="roomFloor" name="roomFloor" placeholder="Enter floor no">
 
+                            <label for="startTime">Start Time</label>
+                            <input type="time" id="startTime" name="startTime" placeholder="Enter start time">
+
+                            <label for="endTime">End Time</label>
+                            <input type="time" id="endTime" name="endTime" placeholder="Enter end time">
+
+                            <label for="roomNumber">Room Number</label>
+                            <input type="text" id="roomNumber" name="roomNumber" readonly>
+
                             <label for="roomStatus">Room Status</label>
                             <input type="text" id="roomStatus" name="roomStatus" placeholder="Enter room status">
+
 
                             <div class="popup-buttons">
                                 <button type="button" id="cancelBtn" class="cancel">Cancel</button>
@@ -318,8 +328,11 @@
                     <div class="popup-content">
 
                         <form id="editForm">
-                            <label for="editRoomNumber">Room Number</label>
-                            <input type="text" id="editRoomNumber" name="roomNumber" readonly>
+                            <label for="editRoomId">Room ID</label>
+                            <input type="text" id="editRoomId" name="roomId" readonly>
+
+                            <label for="editDepartment">Department</label>
+                            <input type="text" id="editDepartment" name="department" placeholder="Enter department name">
 
                             <label for="editRoomCapacity">Room Capacity</label>
                             <input type="text" id="editRoomCapacity" name="roomCapacity"
@@ -328,11 +341,21 @@
                             <label for="editEquipment">Room Equipment</label>
                             <input type="text" id="editEquipment" name="equipment" placeholder="Enter room equipment">
 
-                            <label for="editTime">Time</label>
-                            <input type="text" id="editTime" name="time" placeholder="Enter room time">
 
                             <label for="editRoomFloor">Room Floor</label>
                             <input type="text" id="editRoomFloor" name="roomFloor" placeholder="Enter floor no">
+
+
+                            <label for="editStartTime">Start Time</label>
+                            <input type="time" id="editStartTime" name="startTime" placeholder="Enter start time">
+
+                            <label for="editEndTime">End Time</label>
+                            <input type="time" id="editEndTime" name="endTime" placeholder="Enter end time">
+
+
+
+                            <label for="editRoomNumber">Room Number</label>
+                            <input type="text" id="editRoomNumber" name="roomNumber" readonly>
 
                             <label for="editRoomStatus">Room Status</label>
                             <input type="text" id="editRoomStatus" name="roomStatus" placeholder="Enter room status">
