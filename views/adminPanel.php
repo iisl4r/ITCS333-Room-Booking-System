@@ -347,79 +347,61 @@
 
 
                 <h1>Room Mangement</h1>
+                <?php
+                include "../php/db.php";
+
+                // Query to fetch all room data
+                $query = "SELECT id, department, capacity, equipments, room_floor, room_number, room_status, available_start, available_end FROM rooms";
+                $stmt = $db->prepare($query);
+                $stmt->execute();
+                $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                ?>
                 <table class="content-table">
                     <thead>
                         <tr>
-                            <th>Room No</th>
+                            <th>Room ID</th>
+                            <th>Department</th>
                             <th>Capacity</th>
                             <th>Equipment</th>
-                            <th>Room floor</th>
-                            <th>Requested By</th>
-                            <th>Time</th>
+                            <th>Room Floor</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Room Number</th>
                             <th>Status</th>
-                            <th></th>
-
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        <?php
+                        if (!empty($rooms)) {
+                            foreach ($rooms as $room) {
+                                echo "
                         <tr>
-                            <td>01</td>
-                            <td>25</td>
-                            <td>Projector</td>
-                            <td>Floor2</td>
-                            <td>Barbie</td>
-                            <td>12:00 PM - 01:00 PM</td>
+                            <td>{$room['id']}</td>
+                            <td>{$room['department']}</td>
+                            <td>{$room['capacity']}</td>
+                            <td>{$room['equipments']}</td>
+                            <td>Floor {$room['room_floor']}</td>
+                            <td>{$room['available_start']}</td>
+                            <td>{$room['available_end']}</td>
+                            <td>{$room['room_number']}</td>
+                            <td>{$room['room_status']}</td>
                             <td>
-                                Confirmed
-                            </td>
-                            <td>
-                                <span class="material-symbols-sharp more-options">more_vert</span>
-                                <div class="context-menu hidden">
-                                    <a href="#" class="edit" data-room-index="1">Edit</a>
-                                    <a href="#" class="delete">Delete</a>
+                                <span class='material-symbols-sharp more-options'>more_vert</span>
+                                <div class='context-menu hidden'>
+                                    <a href='#' class='edit' data-room-index='{$room['id']}'>Edit</a>
+                                    <a href='#' class='delete'>Delete</a>
                                 </div>
                             </td>
-                        </tr>
-
-
+                        </tr>";
+                            }
+                        } else {
+                            echo "
                         <tr>
-                            <td>02</td>
-                            <td>30</td>
-                            <td>Projector</td>
-                            <td>Floor1</td>
-                            <td>Elon Musk</td>
-                            <td>02:00 PM - 03:00 PM</td>
-                            <td>
-                                Pending
-                            </td>
-                            <td>
-                                <span class="material-symbols-sharp more-options">more_vert</span>
-                                <div class="context-menu hidden">
-                                    <a href="#" class="edit" data-room-index="2">Edit</a>
-                                    <a href="#" class="delete">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>03</td>
-                            <td>22</td>
-                            <td>Projector</td>
-                            <td>Floor2</td>
-                            <td>SpongeBob</td>
-                            <td>01:00 PM - 03:00 PM</td>
-                            <td>
-                                Cancelled
-                            </td>
-                            <td>
-                                <span class="material-symbols-sharp more-options">more_vert</span>
-                                <div class="context-menu hidden">
-                                    <a href="#" class="edit" data-room-index="3">Edit</a>
-                                    <a href="#" class="delete">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-
+                            <td colspan='10'>No rooms available</td>
+                        </tr>";
+                        }
+                        ?>
                     </tbody>
                 </table>
 
