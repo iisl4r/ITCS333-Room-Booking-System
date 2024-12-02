@@ -1,13 +1,86 @@
-
-const addRoomBtn = document.getElementById('addRoomBtn');
 const popupForm = document.getElementById('popupForm');
 const cancelBtn = document.getElementById('cancelBtn');
+const roomForm = document.getElementById('roomForm');
 
 // Show the popup when "Add Room" button is clicked
-addRoomBtn.addEventListener('click', function (event) {
-    event.preventDefault(); // Prevent the default action of the link
+document.getElementById('addRoomBtn').addEventListener('click', function (event) {
+    event.preventDefault();
     popupForm.style.display = 'flex';
 });
+
+// Close the popup if cancel button is clicked
+cancelBtn.addEventListener('click', function () {
+    popupForm.style.display = 'none';
+});
+
+// Handle room form submission
+roomForm.onsubmit = function (event) {
+    event.preventDefault();
+
+    const formData = new FormData(roomForm);
+
+    fetch('../php/addRoom.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const tbody = document.querySelector('#roomsTable tbody');
+
+                if (!tbody) {
+                    throw new Error('Table body not found');
+                }
+
+
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `
+                <td>${data.room.roomId}</td>
+                <td>${data.room.department}</td>
+                <td>${data.room.capacity}</td>
+                <td>${data.room.equipment}</td>
+                <td>${data.room.roomFloor}</td>
+                <td>${data.room.startTime}</td>
+                <td>${data.room.endTime}</td>
+                <td>${data.room.roomNumber}</td>
+                <td>${data.room.roomStatus}</td>
+                <td>
+                                <span class='material-symbols-sharp more-options'>more_vert</span>
+                                <div class='context-menu hidden'>
+                                    <a href='#' class='edit' data-room-index='{$room['id']}'>Edit</a>
+                                    <a href='#' class='delete'>Delete</a>
+                                </div>
+                            </td>
+            `;
+                tbody.appendChild(newRow);
+
+                popupForm.style.display = 'none';
+                roomForm.reset(); // Clear the form fields
+                alert('Room added successfully!');
+
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error adding room:', error);
+            alert('Error adding room. Please try again.');
+        });
+};
+
+
+
+// Close the Add Room form
+cancelBtn.addEventListener('click', () => {
+    popupForm.style.display = 'none';
+    roomForm.reset();
+});
+
 
 // Close the popup when "Cancel" button is clicked
 cancelBtn.addEventListener('click', function () {
@@ -72,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Get the schedule ID from the data attribute
             const scheduleId = editButton.getAttribute("data-schedule-id");
 
-            // Here, we fetch the schedule data for that ID (you can replace this with actual data fetching)
+
             const scheduleData = getScheduleDataById(scheduleId);
 
             // Fill the form with the fetched data
@@ -84,7 +157,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // Reset the form fields (useful for new schedule)
+    // Reset the form fields
     function resetForm() {
         document.getElementById("roomNo").value = "";
         document.getElementById("scheduleDate").value = "";
@@ -102,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("status").value = data.status;
     }
 
-    // Mock function to simulate fetching schedule data (you can replace this with actual logic)
+    // Mock function to simulate fetching schedule data
     function getScheduleDataById(scheduleId) {
         // Replace with actual data fetching logic
         const mockData = {
@@ -162,14 +235,12 @@ document.addEventListener("DOMContentLoaded", function () {
     addForm.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        // Here, you would typically send the form data to the server
         const roomNo = document.getElementById("roomNo").value;
         const scheduleDate = document.getElementById("scheduleDate").value;
         const startTime = document.getElementById("startTime").value;
         const endTime = document.getElementById("endTime").value;
         const status = document.getElementById("status").value;
 
-        // For now, just log the values to the console
         console.log({
             roomNo: roomNo,
             scheduleDate: scheduleDate,
@@ -178,7 +249,6 @@ document.addEventListener("DOMContentLoaded", function () {
             status: status
         });
 
-        // Optionally, hide the form after submission
         addScheduleForm.classList.add("hidden");
     });
 });
@@ -292,6 +362,53 @@ function handleEdit(event) {
     };
 }
 
+
+
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete');
+
+    // Check if delete buttons are found
+    console.log('Delete buttons:', deleteButtons);
+
+    deleteButtons.forEach(button => {
+        console.log('Attaching event listener to button:', button);
+        button.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            // Get the closest row and the room ID
+            const row = event.target.closest('tr');
+            const roomId = row.querySelector('td:first-child').textContent;
+
+            console.log('Room ID to delete:', roomId);
+
+            fetch('../php/deleteRoom.php', {
+                method: 'POST',
+                body: JSON.stringify({ roomId: roomId }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Server response:', data);
+
+                    if (data.success) {
+                        row.remove();
+                        alert('Room deleted successfully!');
+                    } else {
+                        alert('Failed to delete room: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting room:', error);
+                    alert('Error deleting room. Please check the console for details.');
+                });
+        });
+    });
+});
+
+
+
 // Attach Edit functionality to existing rows
 document.querySelectorAll('.edit').forEach((button) => {
     button.addEventListener('click', handleEdit);
@@ -325,20 +442,5 @@ menuBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
     sideMenu.style.display = "none";
 });
-
-// Change Theme
-themeToggler.addEventListener("click", () => {
-    document.body.classList.toggle("dark-theme-variables");
-
-    themeToggler.querySelector("span:nth-child(1)").classList.toggle("active");
-    themeToggler.querySelector("span:nth-child(2)").classList.toggle("active");
-});
-
-
-
-
-
-
-
 
 
