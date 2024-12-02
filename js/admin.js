@@ -215,7 +215,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-// Select all "Edit" buttons
 const editRoomForm = document.getElementById('editRoomForm');
 const editCancelBtn = document.getElementById('editCancelBtn');
 const editForm = document.getElementById('editForm');
@@ -229,7 +228,7 @@ function handleEdit(event) {
 
     // Extract the room details from the row
     const roomData = {
-        roomId: row.children[0].textContent,
+        roomId: row.children[0].textContent, // The ID is the first cell in the row
         department: row.children[1].textContent,
         capacity: row.children[2].textContent,
         equipment: row.children[3].textContent,
@@ -246,7 +245,6 @@ function handleEdit(event) {
     document.getElementById('editRoomCapacity').value = roomData.capacity;
     document.getElementById('editEquipment').value = roomData.equipment;
     document.getElementById('editRoomFloor').value = roomData.floor;
-
     document.getElementById('editStartTime').value = roomData.startTime;
     document.getElementById('editEndTime').value = roomData.endTime;
     document.getElementById('editRoomNumber').value = roomData.roomNumber;
@@ -259,15 +257,38 @@ function handleEdit(event) {
     editForm.onsubmit = (e) => {
         e.preventDefault();
 
-        // Update the row with new data
-        row.children[1].textContent = document.getElementById('editRoomCapacity').value;
-        row.children[2].textContent = document.getElementById('editEquipment').value;
-        row.children[3].textContent = document.getElementById('editRoomFloor').value;
+        // Get form data
+        const formData = new FormData(editForm);
 
-        row.children[6].textContent = document.getElementById('editRoomStatus').value;
+        // Send data using fetch to update the database
+        fetch('../php/updateRoom.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the table with the new values
+                    row.children[1].textContent = document.getElementById('editDepartment').value;
+                    row.children[2].textContent = document.getElementById('editRoomCapacity').value;
+                    row.children[3].textContent = document.getElementById('editEquipment').value;
+                    row.children[4].textContent = document.getElementById('editRoomFloor').value;
+                    row.children[5].textContent = document.getElementById('editStartTime').value;
+                    row.children[6].textContent = document.getElementById('editEndTime').value;
+                    row.children[7].textContent = document.getElementById('editRoomNumber').value;
+                    row.children[8].textContent = document.getElementById('editRoomStatus').value;
 
-        // Hide the edit form
-        editRoomForm.style.display = 'none';
+                    alert('Room data updated successfully!');
+
+                    // Hide the form
+                    editRoomForm.style.display = 'none';
+                } else {
+                    console.error('Error updating room data:', data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error with the fetch request:', error);
+            });
     };
 }
 
@@ -281,12 +302,13 @@ editCancelBtn.addEventListener('click', () => {
     editRoomForm.style.display = 'none';
 });
 
-// Close the Edit Room form if user clicks outside the form (on the overlay)
+// Close the Edit Room form if user clicks outside the form
 editRoomForm.addEventListener('click', function (event) {
     if (event.target === editRoomForm) { // Check if the click is on the overlay, not inside the form
         editRoomForm.style.display = 'none'; // Hide the form
     }
 });
+
 // side bar show - hide
 
 const sideMenu = document.querySelector("aside");
