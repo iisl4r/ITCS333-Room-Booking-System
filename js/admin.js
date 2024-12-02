@@ -229,20 +229,27 @@ function handleEdit(event) {
 
     // Extract the room details from the row
     const roomData = {
-        roomNumber: row.children[0].textContent,
-        capacity: row.children[1].textContent,
-        equipment: row.children[2].textContent,
-        floor: row.children[3].textContent,
-        time: row.children[5].textContent,
-        status: row.children[6].textContent.trim()
+        roomId: row.children[0].textContent,
+        department: row.children[1].textContent,
+        capacity: row.children[2].textContent,
+        equipment: row.children[3].textContent,
+        floor: row.children[4].textContent,
+        startTime: row.children[5].textContent,
+        endTime: row.children[6].textContent,
+        roomNumber: row.children[7].textContent,
+        status: row.children[8].textContent.trim()
     };
 
     // Populate the edit form fields with the room data
-    document.getElementById('editRoomNumber').value = roomData.roomNumber;
+    document.getElementById('editRoomId').value = roomData.roomId;
+    document.getElementById('editDepartment').value = roomData.department;
     document.getElementById('editRoomCapacity').value = roomData.capacity;
     document.getElementById('editEquipment').value = roomData.equipment;
-    document.getElementById('editTime').value = roomData.time;
     document.getElementById('editRoomFloor').value = roomData.floor;
+
+    document.getElementById('editStartTime').value = roomData.startTime;
+    document.getElementById('editEndTime').value = roomData.endTime;
+    document.getElementById('editRoomNumber').value = roomData.roomNumber;
     document.getElementById('editRoomStatus').value = roomData.status;
 
     // Show the edit form
@@ -256,7 +263,7 @@ function handleEdit(event) {
         row.children[1].textContent = document.getElementById('editRoomCapacity').value;
         row.children[2].textContent = document.getElementById('editEquipment').value;
         row.children[3].textContent = document.getElementById('editRoomFloor').value;
-        row.children[5].textContent = document.getElementById('editTime').value;
+
         row.children[6].textContent = document.getElementById('editRoomStatus').value;
 
         // Hide the edit form
