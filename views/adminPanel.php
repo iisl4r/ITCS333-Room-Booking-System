@@ -287,8 +287,7 @@
                 <div id="popupForm" class="popup-form">
                     <div class="popup-content">
                         <form id="roomForm">
-                            <label for="roomId">Room ID</label>
-                            <input type="text" id="roomId" name="roomId">
+
 
                             <label for="department">Department</label>
                             <input type="text" id="department" name="department" placeholder="Enter department name">
@@ -309,7 +308,7 @@
                             <input type="time" id="endTime" name="endTime" placeholder="Enter end time">
 
                             <label for="roomNumber">Room Number</label>
-                            <input type="text" id="roomNumber" name="roomNumber" readonly>
+                            <input type="text" id="roomNumber" name="roomNumber" placeholder="Enter room number">
 
                             <label for="roomStatus">Room Status</label>
                             <input type="text" id="roomStatus" name="roomStatus" placeholder="Enter room status">
@@ -379,7 +378,7 @@
                 $stmt->execute();
                 $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
-                <table class="content-table">
+                <table class="content-table" id="roomsTable">
                     <thead>
                         <tr>
                             <th>Room ID</th>
