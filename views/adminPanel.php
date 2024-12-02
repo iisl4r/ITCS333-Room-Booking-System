@@ -66,6 +66,15 @@
 
                 <div class="widget-container">
                     <!-- Widget 1 -->
+                    <?php
+                    // fetch number of rooms
+                    include "../php/db.php";
+                    $totalRoomsQuery = "SELECT COUNT(*) as total_rooms FROM rooms";
+                    $stmt = $db->prepare($totalRoomsQuery);
+                    $stmt->execute();
+                    $totalRoomsResult = $stmt->fetch(PDO::FETCH_ASSOC);
+                    $totalRooms = $totalRoomsResult['total_rooms'];
+                    ?>
                     <div class="widget">
                         <div class="icon">
                             <svg width="24" height="24" viewBox="0 0 43 46" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,7 +90,7 @@
                             </svg>
                         </div>
                         <div class="content">
-                            <div class="value">8</div>
+                            <div class="value"><?php echo $totalRooms; ?></div>
                             <div class="extra">
 
                                 <div class="manager">Total Rooms</div>
@@ -144,10 +153,18 @@
 
                         </div>
                         <div class="content">
-                            <div class="value">Ro.A</div>
+                            <?php
+                            include "../php/db.php";
+                            $totalUsersQuery = "SELECT COUNT(*) AS users FROM users";
+                            $stmt = $db->prepare($totalUsersQuery);
+                            $stmt->execute();
+                            $totalusersResult = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $totalusers = $totalusersResult['users'];
+                            ?>
+                            <div class="value"><?php echo $totalusers ?></div>
                             <div class="extra">
 
-                                <div class="manager">Most Booked Room</div>
+                                <div class="manager">Total Users</div>
                             </div>
                         </div>
                     </div>
