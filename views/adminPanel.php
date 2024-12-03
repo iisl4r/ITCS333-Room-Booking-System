@@ -164,8 +164,6 @@
                         </div>
                     </div>
 
-
-
                 </div>
                 <div class="main-container">
                     <?php
@@ -175,15 +173,15 @@
                     // Fetch upcoming bookings from the database
                     try {
                         $query = "SELECT 
-                b.booking_date, 
-                b.start_time, 
-                b.booking_status, 
-                u.fname AS user_name, 
-                b.class_id 
-                FROM booking b
-                JOIN users u ON b.user_id = u.id
-                WHERE b.booking_date >= CURDATE()
-                ORDER BY b.booking_date, b.start_time ASC";
+                        b.booking_date, 
+                        b.start_time, 
+                        b.booking_status, 
+                        u.fname AS user_name, 
+                        b.class_id 
+                        FROM booking b
+                        JOIN users u ON b.user_id = u.id
+                        WHERE b.booking_date >= CURDATE()
+                        ORDER BY b.booking_date, b.start_time ASC";
 
                         $stmt = $db->prepare($query);
                         $stmt->execute();
@@ -373,54 +371,58 @@
                 $stmt->execute();
                 $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 ?>
-                <table class="content-table" id="roomsTable">
-                    <thead>
-                        <tr>
-                            <th>Room ID</th>
-                            <th>Department</th>
-                            <th>Capacity</th>
-                            <th>Equipment</th>
-                            <th>Room Floor</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th>Room Number</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        if (!empty($rooms)) {
-                            foreach ($rooms as $room) {
+                <div class="table-container">
+                    <table class="content-table" id="roomsTable">
+                        <thead>
+                            <tr>
+                                <th>Room ID</th>
+                                <th>Department</th>
+                                <th>Capacity</th>
+                                <th>Equipment</th>
+                                <th>Room Floor</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Room Number</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            if (!empty($rooms)) {
+                                foreach ($rooms as $room) {
+                                    echo "
+                                <tr>
+                                    <td data-label='Room ID'>{$room['id']}</td>
+                                    <td data-label='Department'>{$room['department']}</td>
+                                    <td data-label='Capacity'>{$room['capacity']}</td>
+                                    <td data-label='Equipment'>{$room['equipments']}</td>
+                                    <td data-label='Room Floor'>Floor {$room['room_floor']}</td>
+                                    <td data-label='Start Time'>{$room['available_start']}</td>
+                                    <td data-label='End Time'>{$room['available_end']}</td>
+                                    <td data-label='Room Number'>{$room['room_number']}</td>
+                                    <td data-label='Status'>{$room['room_status']}</td>
+                                    <td data-label='Actions'>
+                                        <span class='material-symbols-sharp more-options'>more_vert</span>
+                                        <div class='context-menu hidden'>
+                                            <a href='#' class='edit' data-room-index='{$room['id']}'>Edit</a>
+                                            <a href='#' class='delete'>Delete</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                ";
+                                }
+                            } else {
                                 echo "
-                        <tr>
-                            <td>{$room['id']}</td>
-                            <td>{$room['department']}</td>
-                            <td>{$room['capacity']}</td>
-                            <td>{$room['equipments']}</td>
-                            <td>Floor {$room['room_floor']}</td>
-                            <td>{$room['available_start']}</td>
-                            <td>{$room['available_end']}</td>
-                            <td>{$room['room_number']}</td>
-                            <td>{$room['room_status']}</td>
-                            <td>
-                                <span class='material-symbols-sharp more-options'>more_vert</span>
-                                <div class='context-menu hidden'>
-                                    <a href='#' class='edit' data-room-index='{$room['id']}'>Edit</a>
-                                    <a href='#' class='delete'>Delete</a>
-                                </div>
-                            </td>
-                        </tr>";
+        <tr>
+            <td colspan='10'>No rooms available</td>
+        </tr>";
                             }
-                        } else {
-                            echo "
-                        <tr>
-                            <td colspan='10'>No rooms available</td>
-                        </tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                            ?>
+                        </tbody>
+
+                    </table>
+                </div>
 
             </div>
 
