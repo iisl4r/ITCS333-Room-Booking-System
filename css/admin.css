@@ -823,3 +823,76 @@ button.cancel {
     color: #333333;
 
 }
+
+
+
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+}
+
+.content-table {
+    width: 100%;
+
+}
+
+.content-table th,
+.content-table td {
+    text-align: left;
+    /* Align text to the left */
+    padding: 8px;
+
+
+}
+
+.content-table tr:hover {
+    background-color: #F7F9FC;
+    /* Light gray background */
+}
+
+
+@media (max-width: 768px) {
+
+    .content-table,
+    .content-table thead,
+    .content-table tbody,
+    .content-table th,
+    .content-table td,
+    .content-table tr {
+        display: block;
+    }
+
+    .content-table thead tr {
+        display: none;
+        /* Hide the table headers */
+    }
+
+    .content-table tr {
+        margin-bottom: 15px;
+        /* Add spacing between rows */
+        border: 1px solid #ddd;
+        /* Add a border for each row */
+    }
+
+    .content-table td {
+        display: flex;
+        justify-content: space-between;
+        /* Space between content */
+        align-items: center;
+        text-align: left;
+        /* Align text to the left */
+        padding: 10px;
+    }
+
+    .content-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-transform: uppercase;
+        /* Make labels uppercase */
+        margin-right: 10px;
+
+    }
+}
