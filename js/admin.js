@@ -52,13 +52,65 @@ roomForm.onsubmit = function (event) {
                 <td>
                                 <span class='material-symbols-sharp more-options'>more_vert</span>
                                 <div class='context-menu hidden'>
-                                    <a href='#' class='edit' data-room-index='{$room['id']}'>Edit</a>
+                                    <a href='#' class='edit' data-room-index='${data.room.roomId}'>Edit</a>
                                     <a href='#' class='delete'>Delete</a>
                                 </div>
                             </td>
             `;
                 tbody.appendChild(newRow);
 
+                // Add event listeners for the Edit and Delete buttons of the newly added row
+                const editBtn = newRow.querySelector('.edit');
+                const deleteBtn = newRow.querySelector('.delete');
+                const moreOptionsBtn = newRow.querySelector('.more-options');
+                const contextMenu = newRow.querySelector('.context-menu');
+
+                // Show/Hide context menu when 'more-options' is clicked
+                moreOptionsBtn.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    contextMenu.style.display = contextMenu.style.display === 'block' ? 'none' : 'block';
+                });
+
+                // Close context menu when clicking outside
+                document.addEventListener('click', () => {
+                    contextMenu.style.display = 'none';
+                });
+
+                // Handle Edit button click
+                editBtn.addEventListener('click', handleEdit);
+
+                // Handle Delete button click
+                deleteBtn.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    // Get the closest row and the room ID
+                    const row = event.target.closest('tr');
+                    const roomId = row.querySelector('td:first-child').textContent;
+
+                    console.log('Room ID to delete:', roomId);
+                    fetch('../php/deleteRoom.php', {
+                        method: 'POST',
+                        body: JSON.stringify({ roomId: roomId }),
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                row.remove();
+                                alert('Room deleted successfully!');
+                            } else {
+                                alert('Failed to delete room: ' + data.error);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error deleting room:', error);
+                            alert('Error deleting room. Please check the console for details.');
+                        });
+                });
+
+                // Close the popup and reset the form
                 popupForm.style.display = 'none';
                 roomForm.reset(); // Clear the form fields
                 alert('Room added successfully!');
@@ -197,7 +249,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const endTime = document.getElementById("endTime").value;
         const status = document.getElementById("status").value;
 
-        // Here you would either create a new schedule or update an existing one
         if (currentScheduleId) {
             console.log("Editing schedule", currentScheduleId, {
                 roomNo, scheduleDate, startTime, endTime, status
