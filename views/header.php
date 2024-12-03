@@ -15,7 +15,9 @@
             <li><a href="#">My Bookings</a></li>
             <!-- Show Admin Panel only if the user is an admin -->
             <?php
-            session_start();
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
             if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                 <li><a href="../views/adminPanel.php">Admin Panel</a></li>
             <?php endif; ?>
