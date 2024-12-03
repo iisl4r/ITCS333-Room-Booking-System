@@ -38,12 +38,7 @@
                     </span>
                     <h3>Rooms Management</h3>
                 </a>
-                <a href="#" class="menu-item" data-section="schedules-section">
-                    <span class="material-symbols-sharp">
-                        event_note
-                    </span>
-                    <h3>Schedules</h3>
-                </a>
+
 
                 <a href="#" class="menu-item" data-section="feedback-section">
                     <span class="material-symbols-sharp">
@@ -428,101 +423,7 @@
                 </table>
 
             </div>
-            <div class="content-section" id="schedules-section">
-                <div class="add">
-                    <a href="#" class="addschedule" id="addScheduleBtn">Add Schedule</a>
-                </div>
-                <h1>Schedule Mangement</h1>
-                <table class="content-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 2% !important;">Room No</th>
-                            <th>Date</th>
-                            <th>Start Time</th>
-                            <th>End Time</th>
-                            <th style="width: 5%;">Status</th>
 
-                            <th></th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>01</td>
-                            <td>2024-12-07</td>
-                            <td>09:00AM</td>
-                            <td>10:00AM</td>
-                            <td>Confirmed</td>
-
-                            <td>
-                                <span class="material-symbols-sharp more-options">more_vert</span>
-                                <div class="context-menu hidden">
-                                    <a href="#" class="edit" data-schedule-id="1">Edit</a>
-                                    <a href="#" class="delete">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-
-
-                        <tr>
-                            <td>02</td>
-                            <td>2024-12-04</td>
-                            <td>07:00AM</td>
-                            <td>10:00AM</td>
-                            <td>Pending</td>
-
-                            <td>
-                                <span class="material-symbols-sharp more-options">more_vert</span>
-                                <div class="context-menu hidden">
-                                    <a href="#" class="edit" data-schedule-id="1">Edit</a>
-                                    <a href="#" class="delete">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>03</td>
-                            <td>2024-12-02</td>
-                            <td>06:00AM</td>
-                            <td>07:00AM</td>
-                            <td>Confirmed</td>
-
-                            <td>
-                                <span class="material-symbols-sharp more-options">more_vert</span>
-                                <div class="context-menu hidden">
-                                    <a href="#" class="edit" data-schedule-id="1">Edit</a>
-                                    <a href="#" class="delete">Delete</a>
-                                </div>
-                            </td>
-                        </tr>
-
-                    </tbody>
-                </table>
-                <div id="addScheduleForm" class="form-popup hidden">
-                    <form id="addForm">
-                        <label for="roomNo">Room No</label>
-                        <input type="text" id="roomNo" name="roomNo" placeholder="Enter room number">
-
-                        <label for="scheduleDate">Date</label>
-                        <input type="date" id="scheduleDate" name="scheduleDate">
-
-                        <label for="startTime">Start Time</label>
-                        <input type="time" id="startTime" name="startTime">
-
-                        <label for="endTime">End Time</label>
-                        <input type="time" id="endTime" name="endTime">
-
-                        <label for="status">Status</label>
-                        <input type="text" id="status" name="status" placeholder="Enter schedule status">
-
-                        <div class="popup-buttons">
-                            <button type="button" id="addCancelBtn" class="cancel">Cancel</button>
-                            <button type="submit" class="save">Save</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
 
 
             <div class="content-section" id="feedback-section">
