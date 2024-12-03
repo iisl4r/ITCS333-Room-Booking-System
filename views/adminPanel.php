@@ -1,3 +1,19 @@
+<?php
+session_start();
+// Check if the 'user' cookie exists
+if (!isset($_COOKIE['user'])) {
+    // Cookie is missing or expired, redirect to the authentication page
+    header("Location: /ITCS333-Room-Booking-System/auth.html");
+    exit();
+}
+
+// Verify that the session has a valid role
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    // If not admin, redirect to the regular user home page
+    header("Location: /ITCS333-Room-Booking-System/index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
