@@ -1,29 +1,50 @@
 <?php
 session_start();
 if(!isset($_SESSION['user_id'] )){
-    header("Location:auth.html");
+    header("Location:auth.php");
     exit;
 }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking System</title>
-    <!-- Bootstrap CSS -->
-    <link href="./css/booking.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Booking System</title>
+        <!--  CSS -->
+        <link href="./css/booking.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp">
+        <link rel="stylesheet" href="./css/header.css">
+        <style>
+            footer {
+                color: black;
+                text-align: left;
+                padding: 10px;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                font-size: 14px;
+            }
+
+            footer p {
+                margin: 0;
+            }
+        </style>
     </head>
+
     <body>
+        <!-- header -->
+         <?php include "views/header.php";?>
         <main>
             <div class="container">
             <!-- Header -->
                 <div class="text-center">
                     <h1>Booking a class</h1>
-                    <p class="text-muted">you selected class <?php// echo ".$_POST['classID']";?></p>
+                    <p class="text-muted">you selected class <?php echo ".$_POST['room_id']";?></p>
                 </div>
                 <!-- Booking Form -->
                 <div class="card shadow">
@@ -42,7 +63,7 @@ if(!isset($_SESSION['user_id'] )){
                             }
 
                             ?>
-                           <!-- <input type='hidden' name='class' value=<?php// echo "$_POST['classID']"; ?> > -->
+                            <input type='hidden' name='class' value=<?php echo "$_POST['room_id']"; ?> >
                             <!-- Select Time -->
                             <div class="mb-3">
                                 <label for="time" class="form-label">Select Time (8:00 AM - 9:00 PM)</label>
@@ -86,7 +107,9 @@ if(!isset($_SESSION['user_id'] )){
                 </div>
             </div>
         </main>
-       
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-        </body>
+
+        <!-- footer -->
+        <?php include "views/footer.php" ;?>
+        
+    </body>
 </html>

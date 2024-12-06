@@ -3,7 +3,7 @@ session_start();
 require 'db.php';
 //insure the user is logged in
 if(!isset($_SESSION['user_id'] )){
-    header("..\login.php");
+    header("..\auth.php");
     exit;
 }
 //insure the user input all data
@@ -16,7 +16,7 @@ if($_SERVER['REQUEST_METHOD']==="POST"){
 $date=($_POST['date']);
 $time=($_POST['time']);
 $duration=intval($_POST['duration']);
-//$class=$_POST['class'];
+$class=$_POST['class'];
 
 //insure valid date
 $currentDate=date("y-m-d");
@@ -29,9 +29,13 @@ if(strtotime($date)<strtotime($currentDate)){
 if(strtotime($date)===strtotime($currentDate) && strtotime($time)<strtotime($currentTime)){
     $_SESSION["time_error"]=true;
 }
-//booking is allowed between 8:00 to 21:00
-$start=strtotime("8:00");
-$end=strtotime("21:00");
+//insure booking is between the room available slots
+$s=$db->prepare("SELECT * FROM rooms WHERE id=:id");
+$s->execute([":id"=>$class]);
+$room=$s->fetch(PDO::FETCH_ASSOC);
+//room's available slots is between $start and $end
+$start=strtotime($room['available_start']);
+$end=strtotime($room['available_end']);
 $input_start=strtotime($time);
 $input_end=$input_start+($duration*60);
 if($input_start<$start || $input_end>$end){
