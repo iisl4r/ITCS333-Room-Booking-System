@@ -88,7 +88,7 @@ try {
                 <div>
                     <div class="d-flex justify-content-center align-items-center mt-2">
                         <?php if ($room["room_status"] == "Available"): ?>
-                            <form action="booking.php" method="POST">
+                            <form action="../booking.php" method="POST">
                                 <input type="hidden" name="room_id" value="<?php echo $room['id']; ?>">
                                 <button type="submit" class="btn btn-success me-2">Book Now!</button>
                             </form>
