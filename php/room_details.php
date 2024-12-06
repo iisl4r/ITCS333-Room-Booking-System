@@ -61,7 +61,7 @@ try {
                     <div class="col-md-6">
                         <div class="card p-3 my-3">
                             <h4 class="card-title mb-4 text-center text-primary fs-4">Room Information</h4>
-                            <p class="fs-5"><strong >Department:</strong> <?php echo $room["department"]; ?></p>
+                            <p class="fs-5"><strong>Department:</strong> <?php echo $room["department"]; ?></p>
                             <p class="fs-5"><strong>Floor:</strong> <?php echo $room["room_floor"]; ?></p>
                             <p class="fs-5"><strong>Capacity:</strong> <?php echo $room["capacity"]; ?> people</p>
                             <p class="fs-5"><strong>Available From:</strong> <?php echo $room["available_start"]; ?></p>
@@ -88,7 +88,10 @@ try {
                 <div>
                     <div class="d-flex justify-content-center align-items-center mt-2">
                         <?php if ($room["room_status"] == "Available"): ?>
-                            <a href="booking.php?id=<?php echo $room['id']; ?>" class="btn btn-success me-2">Book Now!</a>
+                            <form action="booking.php" method="POST">
+                                <input type="hidden" name="room_id" value="<?php echo $room['id']; ?>">
+                                <button type="submit" class="btn btn-success me-2">Book Now!</button>
+                            </form>
                         <?php else: ?>
                             <button type="button" class="btn btn-danger me-2" disabled>Room is occupied</button>
                         <?php endif; ?>
@@ -97,7 +100,6 @@ try {
 
             </div>
         </div>
-
 
         <div class="row align-items-md-stretch">
 
@@ -108,10 +110,9 @@ try {
                     <h2 class="card-title mb-4">Equipments</h2>
                     <ul>
                         <?php
-                        // Split equipment string into an array using comma as the delimiter
+                        // Split equipment string into an array
                         $equipment_list = explode(',', $room["equipments"]);
 
-                        // Loop through each equipment item and display it as a list item
                         foreach ($equipment_list as $equipment):
                         ?>
                             <li><?php echo htmlspecialchars(trim($equipment)); ?></li>
