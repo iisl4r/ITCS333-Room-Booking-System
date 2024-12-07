@@ -1,9 +1,9 @@
 <?php
-session_start();
-if(!isset($_SESSION['user_id'] )){
-    header("Location:auth.php");
-    exit;
-}
+// session_start();
+// if(!isset($_SESSION['user_id'] )){
+//     header("Location:auth.php");
+//     exit;
+// }
 
 ?>
 
@@ -16,24 +16,7 @@ if(!isset($_SESSION['user_id'] )){
         <!--  CSS -->
         <link href="./css/booking.css" rel="stylesheet">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp">
-        <link rel="stylesheet" href="./css/header.css">
-        <style>
-            footer {
-                color: black;
-                text-align: left;
-                padding: 10px;
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                font-size: 14px;
-            }
-
-            footer p {
-                margin: 0;
-            }
-        </style>
+        
     </head>
 
     <body>
@@ -44,7 +27,7 @@ if(!isset($_SESSION['user_id'] )){
             <!-- Header -->
                 <div class="text-center">
                     <h1>Booking a class</h1>
-                    <p class="text-muted">you selected class <?php echo ".$_POST['room_id']";?></p>
+                    <!-- <p class="text-muted">you selected class <?php// echo ".$_POST['room_id']";?></p> -->
                 </div>
                 <!-- Booking Form -->
                 <div class="card shadow">
@@ -63,7 +46,7 @@ if(!isset($_SESSION['user_id'] )){
                             }
 
                             ?>
-                            <input type='hidden' name='class' value=<?php echo "$_POST['room_id']"; ?> >
+                            <!-- <input type='hidden' name='class' value=<?php// echo "$_POST['room_id']"; ?> > -->
                             <!-- Select Time -->
                             <div class="mb-3">
                                 <label for="time" class="form-label">Select Time (8:00 AM - 9:00 PM)</label>

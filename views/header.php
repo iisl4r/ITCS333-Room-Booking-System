@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp">
-<link rel="stylesheet" href="../css/header.css">
+<link rel="stylesheet" href="/ITCS333-Room-Booking-System/css/header.css">
 
 <header class="sticky">
     <div class="logo">
