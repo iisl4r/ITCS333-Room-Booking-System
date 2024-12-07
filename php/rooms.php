@@ -1,24 +1,29 @@
 <?php
-require "db.php";
+require 'db.php';
 require 'updateStatus.php';
 
 try {
-    if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
-        echo "Invalid room ID.";
-        die;
-    }
-
-    $sql = "SELECT * FROM rooms WHERE id = ?";
+    // Fetching rooms details
+    $sql = "SELECT id, room_number, department, room_status FROM rooms";
     $statement = $db->prepare($sql);
-    $statement->execute([$_GET["id"]]);
+    $statement->execute();
+    $rooms = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    $room = $statement->fetch(PDO::FETCH_ASSOC);
-    if (!isset($room)) {
-        echo "Room not found.";
-        die;
+    if (isset($rooms)) {
+
+        $departments = [
+            "IS" => [],
+            "CS" => [],
+            "NE" => []
+        ];
+
+        foreach ($rooms as $room) {
+            $room_department = $room["department"];
+            $departments[$room_department][] = $room;
+        }
     }
 } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
+    echo "Error while fetching the data: " . $e->getMessage();
     die;
 }
 ?>
@@ -29,7 +34,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Room Details</title>
+    <title>Rooms</title>
 
     <!-- Bootstrap CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -37,121 +42,176 @@ try {
 </head>
 
 <body>
-    <div class="container py-4">
-
-        <!-- Header -->
+    <!-- Header -->
+    <div class="header">
         <?php include "../views/header.php" ?>
+    </div>
 
-        <!-- May need some styling -->
-        <div class="p-3 mb-4 bg-body-tertiary rounded-3">
-            <div class="container-fluid p-3">
-                <h1 class="display-5 fw-bold text-center"><?php echo $room["room_number"]; ?> | Room Details</h1>
+    <!-- Department Buttons -->
+    <!-- <div class="container text-center my-4">
+        <a href="rooms.php" class="btn <?php echo is_null($selectedDepartment) ? 'btn-primary' : 'btn-secondary'; ?> mx-2">All Departments</a>
+        <a href="rooms.php?department=Information System" class="btn <?php echo ($selectedDepartment === 'Information System') ? 'btn-primary' : 'btn-secondary'; ?> mx-2">Information System</a>
+        <a href="rooms.php?department=Computer Science" class="btn <?php echo ($selectedDepartment === 'Computer Science') ? 'btn-primary' : 'btn-secondary'; ?> mx-2">Computer Science</a>
+        <a href="rooms.php?department=Network Engineering" class="btn <?php echo ($selectedDepartment === 'Network Engineering') ? 'btn-primary' : 'btn-secondary'; ?> mx-2">Network Engineering</a>
+    </div> -->
 
-                <!-- Room Status -->
-                <h5 class="text-center card-subtitle my-3 text-muted">Status:
-                    <span class="badge bg-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
-                        <?php echo $room["room_status"]; ?>
-                    </span>
-                </h5>
+    <!-- Departments -->
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
 
-                <!-- Room Details -->
-                <div class="row mb-3">
-
-                    <!-- Room Information -->
-                    <div class="col-md-6">
-                        <div class="card p-3 my-3">
-                            <h4 class="card-title mb-4 text-center text-primary fs-4">Room Information</h4>
-                            <p class="fs-5"><strong >Department:</strong> <?php echo $room["department"]; ?></p>
-                            <p class="fs-5"><strong>Floor:</strong> <?php echo $room["room_floor"]; ?></p>
-                            <p class="fs-5"><strong>Capacity:</strong> <?php echo $room["capacity"]; ?> people</p>
-                            <p class="fs-5"><strong>Available From:</strong> <?php echo $room["available_start"]; ?></p>
-                            <p class="fs-5"><strong>Available Until:</strong> <?php echo $room["available_end"]; ?></p>
-                        </div>
+            <!-- IS Department -->
+            <div class="is-department" class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">IS Department Rooms</h4>
                     </div>
+                </div>
 
-                    <!-- Room Image -->
-                    <div class="col-md-6">
-                        <div class="card p-3 my-3">
-                            <div class="card-title text-center">
-                                <!-- Placeholder Image -->
-                                <svg class="bd-placeholder-img card-img-top" width="100%" height="245px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <title>Placeholder</title>
-                                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                                    <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
-                                </svg>
+                <!-- ======= IS Rooms ======= -->
+                <?php if (!empty($departments["IS"])): ?>
+                    <?php foreach ($departments["IS"] as $room): ?>
+                        <div class="card shadow-sm mb-3">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <title>Placeholder</title>
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
+                            </svg>
+
+                            <div class="card-body">
+                                <p class="card-text mb-1">Room: <?php echo $room["room_number"]; ?></p>
+
+                                <!-- Room Status -->
+                                <?php if ($room["room_status"] == "Available"): ?>
+                                    <p class="card-text mb-1">Status: <span class="text-success"><?php echo $room["room_status"]; ?></span></p>
+
+                                <?php elseif ($room["room_status"] == "Occupied"): ?>
+                                    <p class="card-text mb-1">Status: <span class="text-danger"><?php echo $room["room_status"]; ?></span></p>
+
+                                <?php endif; ?>
+
+                                <!-- View Details - Button -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="room_details.php?id=<?php echo $room["id"]; ?>" class="btn btn-sm btn-outline-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+
+            </div>
+
+            <!-- CS Department -->
+            <div id="cs-department" class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">CS Department Rooms</h4>
                     </div>
                 </div>
 
-                <!-- Action Button -->
-                <div>
-                    <div class="d-flex justify-content-center align-items-center mt-2">
-                        <?php if ($room["room_status"] == "Available"): ?>
-                            <form action="booking.php" method="POST">
-                                <input type="hidden" name="room_id" value="<?php echo $room['id']; ?>">
-                                <button type="submit" class="btn btn-success me-2">Book Now!</button>
-                            </form>
-                        <?php else: ?>
-                            <button type="button" class="btn btn-danger me-2" disabled>Room is occupied</button>
-                        <?php endif; ?>
+                <!-- ======= CS Rooms ======= -->
+                <?php if (!empty($departments["CS"])): ?>
+                    <?php foreach ($departments["CS"] as $room): ?>
+                        <div class="card shadow-sm mb-3">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <title>Placeholder</title>
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
+                            </svg>
+
+                            <div class="card-body">
+                                <p class="card-text mb-1">Room: <?php echo $room["room_number"]; ?></p>
+
+                                <!-- Room Status -->
+                                <?php if ($room["room_status"] == "Available"): ?>
+                                    <p class="card-text mb-1">Status: <span class="text-success"><?php echo $room["room_status"]; ?></span></p>
+
+                                <?php elseif ($room["room_status"] == "Occupied"): ?>
+                                    <p class="card-text mb-1">Status: <span class="text-danger"><?php echo $room["room_status"]; ?></span></p>
+
+                                <?php endif; ?>
+
+                                <!-- View Details - Button -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="room_details.php?id=<?php echo $room["id"]; ?>" class="btn btn-sm btn-outline-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
+            <!-- NE Department -->
+            <div id="ne-department" class="col">
+                <div class="card mb-4 rounded-3 shadow-sm">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">NE Department Rooms</h4>
                     </div>
                 </div>
 
+                <!-- ======= NE Rooms ======= -->
+                <?php if (!empty($departments["NE"])): ?>
+                    <?php foreach ($departments["NE"] as $room): ?>
+                        <div class="card shadow-sm mb-3">
+                            <svg class="bd-placeholder-img card-img-top" width="100%" height="225px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
+                                <title>Placeholder</title>
+                                <rect width="100%" height="100%" fill="#55595c"></rect>
+                                <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
+                            </svg>
+
+                            <div class="card-body">
+                                <p class="card-text mb-1">Room: <?php echo $room["room_number"]; ?></p>
+
+                                <!-- Room Status -->
+                                <?php if ($room["room_status"] == "Available"): ?>
+                                    <p class="card-text mb-1">Status: <span class="text-success"><?php echo $room["room_status"]; ?></span></p>
+
+                                <?php elseif ($room["room_status"] == "Occupied"): ?>
+                                    <p class="card-text mb-1">Status: <span class="text-danger"><?php echo $room["room_status"]; ?></span></p>
+
+                                <?php endif; ?>
+
+                                <!-- View Details - Button -->
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="btn-group">
+                                        <a href="room_details.php?id=<?php echo $room["id"]; ?>" class="btn btn-sm btn-outline-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
 
             </div>
         </div>
+    </div>
 
+    <!-- Footer -->
+    <?php include "../views/footer.php" ?>
 
-        <div class="row align-items-md-stretch">
+    <style>
+        .header-img {
+            margin-right: 15px;
+        }
 
-            <!-- Room Equipments -->
-            <div class="col-md-6">
-                <div class="h-100 p-4 text-bg-primary rounded-3">
-                    <!-- Room Equipments -->
-                    <h2 class="card-title mb-4">Equipments</h2>
-                    <ul>
-                        <?php
-                        // Split equipment string into an array using comma as the delimiter
-                        $equipment_list = explode(',', $room["equipments"]);
+        .header {
+            margin-left: 50px;
+            margin-bottom: 20px;
+        }
+    </style>
 
-                        // Loop through each equipment item and display it as a list item
-                        foreach ($equipment_list as $equipment):
-                        ?>
-                            <li><?php echo htmlspecialchars(trim($equipment)); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Room Guidelines -->
-            <div class="col-md-6">
-                <div class="h-100 p-4 bg-body-tertiary border rounded-3">
-                    <h2>Room Guidelines</h2>
-                    <ul>
-                        <li>Eating and drinking inside the room is not allowed.</li>
-                        <li>Smoking is strictly prohibited.</li>
-                        <li>Please clean the room after use.</li>
-                        <li>Switch off all lights, equipment, and air conditioning when leaving.</li>
-                        <li>Adhere to the room's designated booking schedule strictly.</li>
-                        <li>Don't forget your personal belongings left when you left the room.</li>
-                    </ul>
-                </div>
-            </div>
-
-
-            <!-- Footer -->
-            <?php include "../views/footer.php" ?>
-
-        </div>
-
-        <style>
-            .header-img {
-                margin-right: 15px;
-            }
-        </style>
-        <!-- Bootstrap Javascript Link For Functionality -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Bootstrap Javascript Link For Functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 
 </html>
