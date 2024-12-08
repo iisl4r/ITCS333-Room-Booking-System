@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
 
             // Set a cookie to store the fname for 2 minutes
-            setcookie('user', $user['fname'], time() + (60 * 2), "/"); // 2 minutes
+            setcookie('user', $user['fname'], time() + (60 * 30), "/"); // 2 minutes
 
             // Redirect user based on their role (admin or regular user)
             if ($user['role'] === 'admin') {

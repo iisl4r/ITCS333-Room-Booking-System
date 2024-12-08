@@ -4,35 +4,43 @@
 
     // Include the database connection file
     require 'db.php';
+    require 'footer.php';
+    require 'header.php';
 
-    // Check if the user is logged in, otherwise redirect to the login page
-    if (!isset($_SESSION['user_id'])) {
-        header("Location: ../auth.php"); // Redirect to the authentication page if no user ID in session
-        exit();
-    }
+    // Check if the 'user' cookie exists
+if (!isset($_COOKIE['user'])) {
+    // If the cookie is missing or expired, redirect to the authentication page
+    header("Location: ../auth.html");
+    exit();
+}
+// Check if the user is logged in, otherwise redirect to the login page
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ../auth.php"); // Redirect to the authentication page if no user ID in session
+    exit();
+}
 
-    // Prepare SQL query to fetch user details based on the session's user ID
-    $sql = "SELECT * FROM users WHERE id = :user_id";
-    $statement = $db->prepare($sql);
+// Prepare SQL query to fetch user details based on the session's user ID
+$sql = "SELECT * FROM users WHERE id = :user_id";
+$statement = $db->prepare($sql);
 
-    // Execute the query with the user ID from the session
-    $statement->execute(['user_id' => $_SESSION['user_id']]);
-    $user = $statement->fetch(PDO::FETCH_ASSOC); // Fetch the user data as an associative array
+// Execute the query with the user ID from the session
+$statement->execute(['user_id' => $_SESSION['user_id']]);
+$user = $statement->fetch(PDO::FETCH_ASSOC); // Fetch the user data as an associative array
 
-    // Check if user data is retrieved
-    if ($user) {
-        // Assign user details to variables for display
-        $email = $user['email'];
-        $fname = $user['fname'];
-        $major = $user['major'];
-        $age = $user['age'];
-        $phone_num = $user['phone_num'];
-        $photo = $user['profile_pic'];
-    } else {
-        // If user not found, display an error message and stop the script
-        die("User not found. Please ensure you are logged in with a valid account.");
-        exit();
-    }
+// Check if user data is retrieved
+if ($user) {
+    // Assign user details to variables for display
+    $email = $user['email'];
+    $fname = $user['fname'];
+    $major = $user['major'];
+    $age = $user['age'];
+    $phone_num = $user['phone_num'];
+    $photo = $user['profile_pic'];
+} else {
+    // If user not found, display an error message and stop the script
+    die("User not found. Please ensure you are logged in with a valid account.");
+    exit();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
