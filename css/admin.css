@@ -821,6 +821,7 @@ button.cancel {
     padding: 20px;
     font-family: 'Roboto', sans-serif;
     color: #333333;
+    flex-grow: 1;
 
 }
 
