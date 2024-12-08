@@ -14,7 +14,7 @@ CREATE TABLE users (
 CREATE TABLE booking (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL ,
-    class_id INT NOT NULL,
+    class_id VARCHAR(20) NOT NULL,
     booking_date date NOT NULL,
     start_time TIME NOT NULL,
     duration INT NOT NULL,

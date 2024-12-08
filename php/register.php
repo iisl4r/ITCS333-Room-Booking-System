@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = intval(substr($yearAndId, 4, 5));
 
         if (
-            !($year >= 2015 && $year <= 2024) || 
+            !($year >= 2015 && $year <= 2024) ||
             !($id >= 1 && $id <= 11111)
         ) {
             $_SESSION['registration_error'] = "Invalid year or ID range in UoB email.";

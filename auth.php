@@ -51,8 +51,8 @@ session_start();
                 <div class="labelline ll4">Re-Enter password</div>
                 <i class='bx bxs-key i4'></i>
             </div>
-                 <!-- Display error message -->
-                 <?php
+            <!-- Display error message -->
+            <?php
             if (isset($_SESSION['registration_error'])) {
                 echo '<div class="errorSpacing">' . htmlspecialchars($_SESSION['registration_error']) . '</div>';
                 unset($_SESSION['registration_error']); // Clear the error after displaying it
@@ -78,16 +78,16 @@ session_start();
                 <div class="labelline lll2">Enter password</div>
                 <i class='bx bxs-lock ii2'></i>
             </div>
-               <!-- Display error message -->
-               <?php
-                    if (isset($_SESSION['login_msg'])) {
-                       // Check if the message is "Registration successful. Please log in."
-                      $message = htmlspecialchars($_SESSION['login_msg']);
-                      $messageColor = ($message === "Registration successful. Please log in.") ? 'green' : 'red'; // You can change this to any color you'd prefer
-                      echo '<div class="errorSpacing" style="color: ' . $messageColor . ';">' . $message . '</div>';
-                      unset($_SESSION['login_msg']); // Clear the message after displaying it
-                    }
-                ?>
+            <!-- Display error message -->
+            <?php
+            if (isset($_SESSION['login_msg'])) {
+                // Check if the message is "Registration successful. Please log in."
+                $message = htmlspecialchars($_SESSION['login_msg']);
+                $messageColor = ($message === "Registration successful. Please log in.") ? 'green' : 'red'; // You can change this to any color you'd prefer
+                echo '<div class="errorSpacing" style="color: ' . $messageColor . ';">' . $message . '</div>';
+                unset($_SESSION['login_msg']); // Clear the message after displaying it
+            }
+            ?>
             <div class="butSp"><input type="submit" value="Submit"></div>
             <p>Don't have an account? <a href="#container2" class="signUp">Sign Up</a></p>
         </form>
