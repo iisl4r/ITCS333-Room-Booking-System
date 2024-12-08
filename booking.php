@@ -1,9 +1,9 @@
 <?php
-// session_start();
-// if(!isset($_SESSION['user_id'] )){
-//     header("Location:auth.php");
-//     exit;
-// }
+session_start();
+if(!isset($_COOKIE['user'] )){
+    header("Location:auth.php");
+    exit;
+}
 
 ?>
 
@@ -27,7 +27,7 @@
             <!-- Header -->
                 <div class="text-center">
                     <h1>Booking a class</h1>
-                    <!-- <p class="text-muted">you selected class <?php// echo ".$_POST['room_id']";?></p> -->
+                    <p class="text-muted">you selected class <?php echo $_POST['room_number'];?></p>
                 </div>
                 <!-- Booking Form -->
                 <div class="card shadow">
@@ -46,7 +46,7 @@
                             }
 
                             ?>
-                            <!-- <input type='hidden' name='class' value=<?php// echo "$_POST['room_id']"; ?> > -->
+                            <input type='hidden' name='class' value="<?php echo $_POST['room_number']; ?>" >
                             <!-- Select Time -->
                             <div class="mb-3">
                                 <label for="time" class="form-label">Select Time (8:00 AM - 9:00 PM)</label>

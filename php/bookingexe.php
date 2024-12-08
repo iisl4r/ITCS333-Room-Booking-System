@@ -2,7 +2,7 @@
 session_start();
 require 'db.php';
 //insure the user is logged in
-if(!isset($_SESSION['user_id'] )){
+if(!isset($_COOKIE['user'] )){
     header("..\auth.php");
     exit;
 }
