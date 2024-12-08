@@ -13,6 +13,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: /ITCS333-Room-Booking-System/index.php");
     exit();
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,7 +63,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                     </span>
                     <h3>Feedback</h3>
                 </a>
-                <a href="#">
+                <a href="../php/logout.php">
                     <span class="material-symbols-sharp">
                         logout
                     </span>
