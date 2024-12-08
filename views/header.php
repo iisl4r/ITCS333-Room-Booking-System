@@ -22,7 +22,15 @@
                 <li><a href="../views/adminPanel.php">Admin Panel</a></li>
             <?php endif; ?>
 
-            <li class="ste"><a href="#">Sign in</a></li>
+
+            <?php
+            if (isset($_SESSION['user_id'])):
+            ?>
+                <li><a href="../php/logout.php">Sign out</a></li>
+            <?php else: ?>
+                <li><a href="../auth.html">Sign in</a></li>
+            <?php endif; ?>
+
         </ul>
     </nav>
     <div class="auth">
