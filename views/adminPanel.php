@@ -237,7 +237,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         <h1>Recent Feedback</h1>
                         <div class="fedback-1">
                             <div class="profile">
-                                <img src="../img/users/elon-musk.jpg" alt="Mohamed Salah">
+                                <img src="../img/profile_pic.png" alt="Mohamed Salah">
                                 <div class="name">Mohamed Salah</div>
                             </div>
                             <div class="rating">
@@ -258,8 +258,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
                         <div class="fedback-1">
                             <div class="profile">
-                                <img src="../img/users/the-rock.jpg" alt="The Rock">
-                                <div class="name">The Rock</div>
+                                <img src="../img/profile_pic.png" alt="Hamza">
+                                <div class="name">Hamza</div>
                             </div>
                             <div class="rating">
                                 <div class="rat-contr">
