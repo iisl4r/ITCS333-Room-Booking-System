@@ -1,23 +1,26 @@
 <?php
-require "db.php";
+session_start();
 
 try {
-    session_start();
+    require "db.php";
 
-    if (!isset($_SESSION["user_id"])) {
-        echo "User ID is not set in the session.";
-        die;
+    if (!isset($_SESSION['user_id'])) {
+        header("Location:../auth.php");
+        exit;
     }
 
     $userId = $_SESSION["user_id"];
     $currentDate = date("Y-m-d");
 
-    // Upcoming Booking
+    // Upcoming Bookings
     $upcomingSQL = "
-        SELECT r.room_number, r.room_floor, r.department, b.id, b.booking_date, b.start_time, b.end_time, b.duration
+        SELECT r.room_number, r.room_floor,
+        r.department, b.id, b.booking_date,
+        b.start_time, b.end_time, b.duration,
+        b.booking_status
         FROM rooms r
-        JOIN booking b ON r.id = b.class_id
-        WHERE b.user_id = ? AND b.booking_date >= ?
+        JOIN booking b ON r.room_number = b.class_id
+        WHERE b.user_id = ? AND b.booking_date >= ? AND b.booking_status != 'Canceled'
         ORDER BY b.booking_date ASC
     ";
 
@@ -25,11 +28,13 @@ try {
     $upcomingStatement->execute([$userId, $currentDate]);
     $upcomingBookings = $upcomingStatement->fetchAll(PDO::FETCH_ASSOC);
 
-    // Past Booking
+    // Past Bookings
     $pastSQL = "
-        SELECT r.room_number, r.room_floor, r.department, b.booking_date, b.start_time, b.end_time, b.duration
+        SELECT r.room_number, r.room_floor,
+        r.department, b.booking_date,
+        b.start_time, b.end_time, b.duration
         FROM rooms r
-        JOIN booking b ON r.id = b.class_id
+        JOIN booking b ON r.room_number = b.class_id
         WHERE b.user_id = ? AND b.booking_date < ?
         ORDER BY b.booking_date DESC
     ";
@@ -37,6 +42,18 @@ try {
     $pastStatement = $db->prepare($pastSQL);
     $pastStatement->execute([$userId, $currentDate]);
     $pastBookings = $pastStatement->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Canceled Bookings
+    $canceledBookingsSQL = "
+    SELECT COUNT(b.id) AS canceled_count
+    FROM booking b
+    WHERE LOWER(b.booking_status) = 'canceled' AND b.user_id = ?
+    ";
+    $canceledBookingsSQLStatement = $db->prepare($canceledBookingsSQL);
+    $canceledBookingsSQLStatement->execute([$userId]);
+    $canceledBookings = $canceledBookingsSQLStatement->fetch(PDO::FETCH_ASSOC)['canceled_count'];
+    
+
 } catch (PDOException $e) {
     echo "Error while fetching booking data: " . $e->getMessage();
     die;
@@ -86,9 +103,9 @@ function formatTime($time)
         </div>
 
         <main id="dashboard" class="col-12 col-md-9 col-lg-10">
-            <div class="row row-cols-2 row-cols-md-2 mb-3 text-center">
+            <div class="row row-cols-<?php echo empty($canceledBookings['canceled_count']) ? "2" : "3"; ?> row-cols-md-2 mb-3 text-center">
 
-                <div class="col-12">
+                <div class="col-12 col-lg-6">
                     <div class="card mb-3">
                         <div class="card-header">
                             <h4 class="my-0">Upcoming Bookings</h4>
@@ -121,7 +138,7 @@ function formatTime($time)
                     </div>
                 </div>
 
-                <div class="col-12">
+                <div class="col-12 col-lg-6">
                     <div class="card mb-3">
                         <div class="card-header">
                             <h4 class="my-0">Past Bookings</h4>
@@ -148,6 +165,32 @@ function formatTime($time)
                     </div>
                 </div>
 
+                <?php if (!empty($canceledBookings['canceled_count'])): ?>
+                    <div class="col-12 col-lg-6">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h4 class="my-0">Past Bookings</h4>
+                            </div>
+                            <div class="card-body">
+                                <?php if (!empty($pastBookings)): ?>
+                                    <ul class="list-group">
+                                        <?php foreach ($pastBookings as $pastBooking): ?>
+                                            <li class="list-group-item text-center mb-3 border rounded fs-6">
+                                                <strong class="text-primary fs-5"><?php echo $pastBooking["room_number"]; ?></strong> <br>
+                                                <strong>Room Floor: </strong> <?php echo $pastBooking["room_floor"]; ?> <br>
+                                                <strong>Room Department: </strong> <?php echo $pastBooking["department"]; ?> <br>
+                                                <strong>Booking Date: </strong> <?php echo $pastBooking["booking_date"]; ?> <br>
+                                                <strong>Start Time: </strong> <?php echo formatTime($pastBooking['start_time']); ?> <br>
+                                                <strong>End Time: </strong> <?php echo formatTime($pastBooking['end_time']); ?> <br>
+                                                <strong>Duration: </strong> <?php echo $pastBooking['duration'] . ' minutes'; ?> <br>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </main>
     </div>
