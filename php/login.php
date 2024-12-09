@@ -53,12 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Set a cookie for the fname
             setcookie('user', $user['fname'], time() + (60 * 30), "/");
 
-            // Redirect based on role
-            if ($user['role'] === 'admin') {
-                header("Location: ../indexAdmin.php");
-            } else {
-                header("Location: ../index.php");
-            }
+            $redirectUrl = $_SESSION['previous_page'] ?? "../index.php";
+            unset($_SESSION['previous_page']);
+            header("Location: $redirectUrl");
             exit;
         } else {
             $_SESSION['login_msg'] = "Invalid email or password.";
@@ -70,5 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ../auth.php");
         exit;
     }
+
 }
 ?>
