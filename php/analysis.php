@@ -12,16 +12,11 @@ try {
     $sqlTotalRooms = "
                     SELECT COUNT(DISTINCT r.id) AS total_rooms
                     FROM rooms r
-                    LEFT JOIN booking b ON r.id = b.class_id;
                     ";
 
     $totalRoomsStatement = $db->prepare($sqlTotalRooms);
     $totalRoomsStatement->execute();
-    $totalRooms = $totalRoomsStatement->fetch(PDO::FETCH_ASSOC)['total_rooms'] ?? 0;
-
-    $totalRoomsStatement = $db->prepare($sqlTotalRooms);
-    $totalRoomsStatement->execute();
-    $totalRooms = $totalRoomsStatement->fetch(PDO::FETCH_ASSOC)['total_rooms'] ?? 0;
+    $totalRooms = $totalRoomsStatement->fetch(PDO::FETCH_ASSOC)['total_rooms'] ?? 0;;
 
     // ======== Available Rooms ========
     $sqlAvailableRooms = "
@@ -97,13 +92,10 @@ try {
     // === Total Rooms ===
 
     // Current Period
-    $currentDateCondition = "WHERE DATE(b.booking_date) = CURDATE()";
-
     $sqlTotalRoomsCurrent = "
                             SELECT COUNT(DISTINCT r.id) AS total_rooms
                             FROM rooms r
                             LEFT JOIN booking b ON r.id = b.class_id
-                            $currentDateCondition
                             ";
 
     $currentTotalRoomsStmt = $db->prepare($sqlTotalRoomsCurrent);
