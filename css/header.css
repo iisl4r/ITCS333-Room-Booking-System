@@ -154,7 +154,9 @@ header .material-symbols-sharp {
     display: none;
 }
 
-
+.test {
+    display: none;
+}
 
 @media (max-width: 768px) {
     .nav-links {
@@ -198,6 +200,10 @@ header .material-symbols-sharp {
 
     .auth {
         display: none;
+    }
+
+    .test {
+        display: block;
     }
 
     .nav-links ul {

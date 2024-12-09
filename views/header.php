@@ -19,16 +19,16 @@
                 session_start();
             }
             if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
-                <li><a href="../views/adminPanel.php">Admin Panel</a></li>
+                <li><a href="/ITCS333-Room-Booking-System/views/adminPanel.php">Admin Panel</a></li>
             <?php endif; ?>
 
 
             <?php
             if (isset($_SESSION['user_id'])):
             ?>
-                <li><a href="../php/logout.php">Sign out</a></li>
+                <li><a class="test" href="/ITCS333-Room-Booking-System/php/logout.php">Sign out</a></li>
             <?php else: ?>
-                <li><a href="../auth.html">Sign in</a></li>
+                <li><a class="test" href="/ITCS333-Room-Booking-System/auth.php">Sign in</a></li>
             <?php endif; ?>
 
         </ul>
@@ -41,14 +41,14 @@
         if (isset($_SESSION['user_id'])):
         ?>
             <!-- Sign Out Link -->
-            <a href="../php/logout.php" class="sign-in">Logout
+            <a href="/ITCS333-Room-Booking-System/php/logout.php" class="sign-in">Logout
                 <span class="material-symbols-sharp">
                     logout
                 </span>
             </a>
         <?php else: ?>
             <!-- Sign In Link -->
-            <a href="../auth.html" class="sign-in">Sign in
+            <a href="/ITCS333-Room-Booking-System/auth.php" class="sign-in">Sign in
                 <span class="material-symbols-sharp">
                     arrow_right_alt
                 </span>
