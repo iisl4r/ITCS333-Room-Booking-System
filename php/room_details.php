@@ -2,6 +2,34 @@
 require "db.php";
 require 'updateStatus.php';
 
+function determineRoomStatus($db, $roomId)
+{
+    try {
+        $currentDate = date('Y-m-d'); // Correct format: YYYY-MM-DD
+        $currentTime = date('H:i:s'); // Correct format: HH:MM:SS
+
+        $sql = "SELECT * FROM booking 
+                WHERE class_id = :roomId 
+                AND booking_status = 'active' 
+                AND booking_date = :currentDate 
+                AND start_time <= :currentTime 
+                AND end_time >= :currentTime";
+
+        $statement = $db->prepare($sql);
+        $statement->bindParam(':roomId', $roomId, PDO::PARAM_STR);
+        $statement->bindParam(':currentDate', $currentDate, PDO::PARAM_STR);
+        $statement->bindParam(':currentTime', $currentTime, PDO::PARAM_STR);
+        $statement->execute();
+
+        $booking = $statement->fetch(PDO::FETCH_ASSOC);
+
+        return $booking ? "Occupied" : "Available";
+    } catch (PDOException $e) {
+        echo "Error while checking room status: " . $e->getMessage();
+        die;
+    }
+}
+
 try {
     if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
         echo "Invalid room ID.";
@@ -17,9 +45,17 @@ try {
         echo "Room not found.";
         die;
     }
+    // Determine the real-time status of the room
+    $room["room_status"] = determineRoomStatus($db, $room["room_number"]);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
     die;
+}
+
+function formatTime($time)
+{
+    $dateTime = DateTime::createFromFormat('H:i:s', $time);
+    return $dateTime ? $dateTime->format('h:i A') : $time;
 }
 ?>
 
@@ -32,7 +68,8 @@ try {
     <title>Room Details</title>
 
     <!-- Bootstrap CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
@@ -55,100 +92,178 @@ try {
                 </h5>
 
                 <!-- Room Details -->
-                <div class="row mb-3">
+                <div class="container my-4">
 
-                    <!-- Room Information -->
-                    <div class="col-md-6">
-                        <div class="card p-3 my-3">
-                            <h4 class="card-title mb-4 text-center text-primary fs-4">Room Information</h4>
-                            <p class="fs-5"><strong>Department:</strong> <?php echo $room["department"]; ?></p>
-                            <p class="fs-5"><strong>Floor:</strong> <?php echo $room["room_floor"]; ?></p>
-                            <p class="fs-5"><strong>Capacity:</strong> <?php echo $room["capacity"]; ?> people</p>
-                            <p class="fs-5"><strong>Available From:</strong> <?php echo $room["available_start"]; ?></p>
-                            <p class="fs-5"><strong>Available Until:</strong> <?php echo $room["available_end"]; ?></p>
+                    <!-- Row: Room Information and Carousel -->
+                    <div class="row mb-4">
+                        <!-- Room Information Card -->
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <h4 class="card-title mb-4 text-center text-primary fs-4">Room Information</h4>
+                                <p class="fs-5"><strong>Department:</strong> <?php echo $room["department"]; ?></p>
+                                <p class="fs-5"><strong>Floor:</strong> <?php echo $room["room_floor"]; ?></p>
+                                <p class="fs-5"><strong>Capacity:</strong> <?php echo $room["capacity"]; ?> people</p>
+                                <p class="fs-5"><strong>Available From:</strong> <?php echo formatTime($room["available_start"]); ?></p>
+                                <p class="fs-5"><strong>Available Until:</strong> <?php echo formatTime($room["available_end"]); ?></p>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Room Image -->
-                    <div class="col-md-6">
-                        <div class="card p-3 my-3">
-                            <div class="card-title text-center">
-                                <!-- Placeholder Image -->
-                                <svg class="bd-placeholder-img card-img-top" width="100%" height="245px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                    <title>Placeholder</title>
-                                    <rect width="100%" height="100%" fill="#55595c"></rect>
-                                    <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
-                                </svg>
+                        <!-- Room Image Carousel -->
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <div id="carouselExampleInterval" class="carousel slide" data-bs-ride="carousel">
+                                    <div class="carousel-inner">
+                                        <div class="carousel-item active" data-bs-interval="4000">
+                                            <img class="d-block w-100 carousel-img"
+                                                src="../img/<?php echo $room["department"]; ?>/<?php echo $room["room_number"]; ?>/<?php echo $room["department"]; ?>_<?php echo $room["room_number"]; ?>_001.jpg"
+                                                alt="Room Image">
+                                        </div>
+                                        <div class="carousel-item" data-bs-interval="4000">
+                                            <img class="d-block w-100 carousel-img"
+                                                src="../img/<?php echo $room["department"]; ?>/<?php echo $room["room_number"]; ?>/<?php echo $room["department"]; ?>_<?php echo $room["room_number"]; ?>_002.jpg"
+                                                alt="Room Image">
+                                        </div>
+                                        <div class="carousel-item">
+                                            <img class="d-block w-100 carousel-img"
+                                                src="../img/<?php echo $room["department"]; ?>/<?php echo $room["room_number"]; ?>/<?php echo $room["department"]; ?>_<?php echo $room["room_number"]; ?>_003.jpg"
+                                                alt="Room Image">
+                                        </div>
+                                    </div>
+                                    <button class="carousel-control-prev" type="button"
+                                        data-bs-target="#carouselExampleInterval" data-bs-slide="prev">
+                                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Previous</span>
+                                    </button>
+                                    <button class="carousel-control-next" type="button"
+                                        data-bs-target="#carouselExampleInterval" data-bs-slide="next">
+                                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                        <span class="visually-hidden">Next</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Action Button -->
-                <div>
-                    <div class="d-flex justify-content-center align-items-center mt-2">
-                        <?php if ($room["room_status"] == "Available"): ?>
-                            <form action="../booking.php" method="POST">
-                                <input type="hidden" name="room_id" value="<?php echo $room['id']; ?>">
-                                <button type="submit" class="btn btn-success me-2">Book Now!</button>
-                            </form>
-                        <?php else: ?>
-                            <button type="button" class="btn btn-danger me-2" disabled>Room is occupied</button>
-                        <?php endif; ?>
+                    <!-- Row: Equipment and Guidelines -->
+                    <div class="row">
+                        <!-- Equipment -->
+                        <div class="col-md-6">
+                            <div class="card p-4 shadow-sm">
+                                <h4 class="card-title mb-4 text-center text-success fs-3">Equipment</h4>
+                                <ul class="list-group">
+                                    <?php
+                                    // Define mapping for equipment icons
+                                    $equipment_icons = [
+                                        'Whiteboard' => 'bi-easel',
+                                        'Projector' => 'bi-projector-fill',
+                                        'Speaker' => 'bi-speaker-fill',
+                                        'Laptop' => 'bi-laptop-fill',
+                                        'Microphone' => 'bi-mic-fill',
+                                        'Monitors' => 'bi-display-fill'
+                                    ];
+
+                                    // Split equipment string into an array
+                                    $equipment_list = explode(',', $room["equipments"]);
+
+                                    foreach ($equipment_list as $equipment):
+                                        $equipment = trim($equipment);
+                                        // Get the corresponding icon or fallback icon
+                                        $icon_class = $equipment_icons[$equipment] ?? 'bi-question-circle';
+                                    ?>
+                                        <li class="list-group-item d-flex align-items-center mb-3 bg-light rounded">
+                                            <i class="<?php echo $icon_class; ?> text-primary me-3 fs-4"></i>
+                                            <span
+                                                class="fs-5 fw-semibold"><?php echo htmlspecialchars($equipment); ?></span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Room Guidelines -->
+                        <div class="col-md-6">
+                            <div class="card p-3">
+                                <h4 class="card-title mb-4 text-center text-warning fs-3">Room Guidelines</h4>
+                                <ul class="list-group list-group-flush">
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="bi bi-x-circle-fill text-danger me-2"></i> Eating and drinking inside
+                                        the room is not allowed.
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="bi bi-slash-circle-fill text-warning me-2"></i> Smoking is strictly
+                                        prohibited.
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="bi bi-check-square-fill text-primary me-2"></i> Please clean the room
+                                        after use.
+                                    </li>
+
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="bi bi-lightbulb-off-fill text-secondary me-2"></i> Switch off all
+                                        lights, equipment, and air conditioning when leaving.
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="bi bi-calendar-check-fill text-success me-2"></i> Adhere to the room's
+                                        designated booking schedule strictly.
+                                    </li>
+                                    <li class="list-group-item d-flex align-items-center">
+                                        <i class="bi bi-bag-fill text-info me-2"></i> Don't forget your personal
+                                        belongings when you leave the room.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
                     </div>
+
                 </div>
 
+                <style>
+                    .carousel-img {
+                        height: 100%;
+                        /* Matches the card's height */
+                        object-fit: cover;
+                        /* Ensures images fit the space proportionally */
+                    }
+
+                    .card {
+                        height: 100%;
+                        /* Ensures all cards are consistent in height */
+                    }
+                </style>
             </div>
-        </div>
 
-        <div class="row align-items-md-stretch">
-
-            <!-- Room Equipments -->
-            <div class="col-md-6">
-                <div class="h-100 p-4 text-bg-primary rounded-3">
-                    <!-- Room Equipments -->
-                    <h2 class="card-title mb-4">Equipments</h2>
-                    <ul>
-                        <?php
-                        // Split equipment string into an array
-                        $equipment_list = explode(',', $room["equipments"]);
-
-                        foreach ($equipment_list as $equipment):
-                        ?>
-                            <li><?php echo htmlspecialchars(trim($equipment)); ?></li>
-                        <?php endforeach; ?>
-                    </ul>
+            <!-- Action Button -->
+            <div>
+                <div class="d-flex justify-content-center align-items-center mt-2">
+                    <?php if ($room["room_status"] == "Available"): ?>
+                        <form action="../booking.php" method="POST">
+                            <input type="hidden" name="class" value="<?php echo $room['room_number']; ?>">
+                            <button type="submit" class="btn btn-success me-2">Book Now!</button>
+                        </form>
+                    <?php else: ?>
+                        <button type="button" class="btn btn-danger me-2" disabled>Room is occupied</button>
+                    <?php endif; ?>
                 </div>
             </div>
-
-            <!-- Room Guidelines -->
-            <div class="col-md-6">
-                <div class="h-100 p-4 bg-body-tertiary border rounded-3">
-                    <h2>Room Guidelines</h2>
-                    <ul>
-                        <li>Eating and drinking inside the room is not allowed.</li>
-                        <li>Smoking is strictly prohibited.</li>
-                        <li>Please clean the room after use.</li>
-                        <li>Switch off all lights, equipment, and air conditioning when leaving.</li>
-                        <li>Adhere to the room's designated booking schedule strictly.</li>
-                        <li>Don't forget your personal belongings left when you left the room.</li>
-                    </ul>
-                </div>
-            </div>
-
-
-            <!-- Footer -->
-            <?php include "../views/footer.php" ?>
 
         </div>
+    </div>
 
-        <style>
-            .header-img {
-                margin-right: 15px;
-            }
-        </style>
-        <!-- Bootstrap Javascript Link For Functionality -->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    <!-- Footer -->
+    <?php include "../views/footer.php" ?>
+
+
+    <style>
+        .header-img {
+            margin-right: 15px;
+        }
+    </style>
+    <!-- Bootstrap Javascript Link For Functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 </body>
 
 </html>
