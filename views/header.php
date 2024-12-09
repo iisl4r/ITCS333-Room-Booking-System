@@ -10,9 +10,10 @@
     <nav class="nav-links">
         <ul>
 
-            <li><a href="#">Home</a></li>
+            <li><a href="/ITCS333-Room-Booking-System/php/upcoming_past_bookings.php">Home</a></li>
             <li><a href="/ITCS333-Room-Booking-System/php/rooms.php">Browse Rooms</a></li>
-            <li><a href="#">My Bookings</a></li>
+            <li><a href="/ITCS333-Room-Booking-System/php/upcoming_past_bookings.php">My Bookings</a></li>
+            <li><a href="/ITCS333-Room-Booking-System/php/edit_profile.php">Profile Management</a></li>
             <!-- Show Admin Panel only if the user is an admin -->
             <?php
             if (session_status() === PHP_SESSION_NONE) {
