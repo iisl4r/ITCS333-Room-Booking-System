@@ -1,0 +1,22 @@
+html,main{
+    background-color: #F6F6F6;
+}
+ 
+.text-center{
+    color: #2F4DFA;
+    margin: 3rem;
+}
+.btn.btn-primary{
+    background-color: #2F4DFA;
+}
+.formSection{
+    margin: 1rem;
+
+}
+div.container{
+    width: 70%;
+    
+}
+.card-body,input.form-control,select.form-select{
+    background-color: #f1f1f3;
+}
