@@ -4,9 +4,11 @@ session_start();
 try {
     require "db.php";
 
-    if (!isset($_SESSION['user_id'])) {
-        header("Location:../auth.php");
-        exit;
+    if (!isset($_COOKIE['user'])) {
+        // Cookie is missing or expired, redirect to the authentication page
+        $_SESSION['previous_page'] = $_SERVER['REQUEST_URI'];
+        header("Location: /ITCS333-Room-Booking-System/auth.php");
+        exit();
     }
 
     $userId = $_SESSION["user_id"];
@@ -42,7 +44,7 @@ try {
     $pastStatement = $db->prepare($pastSQL);
     $pastStatement->execute([$userId, $currentDate]);
     $pastBookings = $pastStatement->fetchAll(PDO::FETCH_ASSOC);
-    
+
     // Canceled Bookings
     $canceledBookingsSQL = "
     SELECT COUNT(b.id) AS canceled_count
@@ -52,8 +54,6 @@ try {
     $canceledBookingsSQLStatement = $db->prepare($canceledBookingsSQL);
     $canceledBookingsSQLStatement->execute([$userId]);
     $canceledBookings = $canceledBookingsSQLStatement->fetch(PDO::FETCH_ASSOC)['canceled_count'];
-    
-
 } catch (PDOException $e) {
     echo "Error while fetching booking data: " . $e->getMessage();
     die;

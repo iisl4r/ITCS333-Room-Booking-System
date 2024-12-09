@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Set a cookie for the fname
             setcookie('user', $user['fname'], time() + (60 * 30), "/");
 
-            $redirectUrl = $_SESSION['previous_page'] ?? "../index.php";
+            $redirectUrl = $_SESSION['previous_page'] ?? "../php/analysis.php";
             unset($_SESSION['previous_page']);
             header("Location: $redirectUrl");
             exit;
@@ -67,6 +67,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ../auth.php");
         exit;
     }
-
 }
-?>

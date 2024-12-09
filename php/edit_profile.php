@@ -13,11 +13,7 @@ if (!isset($_COOKIE['user'])) {
     header("Location: /ITCS333-Room-Booking-System/auth.php");
     exit();
 }
-// Check if the user is logged in, otherwise redirect to the login page
-if (!isset($_SESSION['user_id'])) {
-    header("Location: ../auth.php"); // Redirect to the authentication page if no user ID in session
-    exit();
-}
+
 
 // Prepare SQL query to fetch user details based on the session's user ID
 $sql = "SELECT * FROM users WHERE id = :user_id";

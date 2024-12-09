@@ -2,6 +2,13 @@
 require 'db.php';
 require 'updateStatus.php';
 
+session_start();
+if (!isset($_COOKIE['user'])) {
+    // Cookie is missing or expired, redirect to the authentication page
+    $_SESSION['previous_page'] = $_SERVER['REQUEST_URI'];
+    header("Location: /ITCS333-Room-Booking-System/auth.php");
+    exit();
+}
 // Function to determine the status of a room
 function determineRoomStatus($db, $roomId)
 {

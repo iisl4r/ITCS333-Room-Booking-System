@@ -1,8 +1,10 @@
 <?php
 session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: auth.php");
-    exit;
+if (!isset($_COOKIE['user'])) {
+    // Cookie is missing or expired, redirect to the authentication page
+    $_SESSION['previous_page'] = $_SERVER['REQUEST_URI'];
+    header("Location: /ITCS333-Room-Booking-System/auth.php");
+    exit();
 }
 ?>
 
