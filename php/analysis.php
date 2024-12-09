@@ -9,26 +9,15 @@ try {
         exit;
     }
 
-    // ======== Total Rooms ========
-    $filterTotalRooms = isset($_POST['filterTotalRooms']);
-
-    $dateCondition = "";
-
-    // Total Rooms Filters
-    if ($filterTotalRooms === "Today") {
-        $today = date('Y-m-d');
-        $dateCondition = "WHERE DATE(booking_date) = CURDATE()";
-    } elseif ($filterTotalRooms === "This Month") {
-        $dateCondition = "WHERE MONTH(booking_date) = MONTH(CURRENT_DATE) AND YEAR(booking_date) = YEAR(CURRENT_DATE)";
-    } elseif ($filterTotalRooms === "This Year") {
-        $dateCondition = "WHERE YEAR(booking_date) = YEAR(CURRENT_DATE)";
-    }
-
     $sqlTotalRooms = "
-    SELECT COUNT(id) AS total_rooms
-    FROM rooms
-    $dateCondition
-    ";
+                    SELECT COUNT(DISTINCT r.id) AS total_rooms
+                    FROM rooms r
+                    LEFT JOIN booking b ON r.id = b.class_id;
+                    ";
+
+    $totalRoomsStatement = $db->prepare($sqlTotalRooms);
+    $totalRoomsStatement->execute();
+    $totalRooms = $totalRoomsStatement->fetch(PDO::FETCH_ASSOC)['total_rooms'] ?? 0;
 
     $totalRoomsStatement = $db->prepare($sqlTotalRooms);
     $totalRoomsStatement->execute();
@@ -36,10 +25,10 @@ try {
 
     // ======== Available Rooms ========
     $sqlAvailableRooms = "
-    SELECT COUNT(id) AS available_rooms
-    FROM rooms
-    WHERE LOWER(room_status) = 'available';
-    ";
+                        SELECT COUNT(id) AS available_rooms
+                        FROM rooms
+                        WHERE LOWER(room_status) = 'available';
+                        ";
 
     $availableRoomsStatement = $db->prepare($sqlAvailableRooms);
     $availableRoomsStatement->execute();
@@ -47,15 +36,15 @@ try {
 
     // ======== Most Booked Room ========
     $sqlMostBookedRoom = "
-    SELECT r.room_number, 
-           COUNT(b.id) AS booking_count
-    FROM rooms r
-    LEFT JOIN booking b 
-    ON r.id = b.class_id
-    GROUP BY r.id
-    ORDER BY booking_count DESC
-    LIMIT 1
-    ";
+                        SELECT r.room_number, 
+                            COUNT(b.id) AS booking_count
+                        FROM rooms r
+                        LEFT JOIN booking b 
+                        ON r.room_number = b.class_id
+                        GROUP BY r.id
+                        ORDER BY booking_count DESC
+                        LIMIT 1
+                        ";
 
     $mostBookedRoomStatement = $db->prepare($sqlMostBookedRoom);
     $mostBookedRoomStatement->execute();
@@ -65,61 +54,70 @@ try {
 
     // ======== Booking Report========
     $sqlBookingReport = "
-        SELECT DATE(booking_date) AS booking_date, COUNT(*) AS total_bookings
-        FROM booking
-        $dateCondition
-        GROUP BY DATE(booking_date)
-        ORDER BY booking_date ASC
-        ";
+                        SELECT DATE(b.booking_date) AS booking_date, COUNT(*) AS total_bookings
+                        FROM booking b
+                        GROUP BY DATE(b.booking_date)
+                        ORDER BY b.booking_date ASC
+                        ";
     $statement = $db->prepare($sqlBookingReport);
     $statement->execute();
     $bookings = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     // Prepare data for JavaScript
+    $totalBookingsData = [];
+    $confirmedBookingsData = [];
+    $canceledBookingsData = [];
     $dates = [];
-    $totalBookings = [];
-    $confirmedBookings = [];
-    $canceledBookings = [];
+
+    $sqlBookingsByDate = "SELECT DATE(booking_date) AS date, 
+                          COUNT(*) AS total, 
+                          SUM(LOWER(booking_status) = 'confirmed') AS confirmed, 
+                          SUM(LOWER(booking_status) = 'canceled') AS canceled 
+                          FROM booking 
+                          GROUP BY DATE(booking_date)";
+    $statement = $db->prepare($sqlBookingsByDate);
+    $statement->execute();
+    $bookings = $statement->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($bookings as $booking) {
-        $dates[] = $booking['booking_date'];
-        $totalBookings[] = $booking['total_bookings'];
-
-        // Query to fetch canceled bookings for the current date
-        $sqlCanceledForDate = "
-            SELECT COUNT(*) AS canceled_bookings
-            FROM booking
-            WHERE DATE(booking_date) = :booking_date
-            AND LOWER(booking_status) = 'canceled'
-        ";
-        $canceledStmt = $db->prepare($sqlCanceledForDate);
-        $canceledStmt->execute([':booking_date' => $booking['booking_date']]);
-        $canceledBookings[] = $canceledStmt->fetch(PDO::FETCH_ASSOC)['canceled_bookings'] ?? 0;
-
-        // Assuming confirmed bookings are total - canceled
-        $confirmedBookings[] = $booking['total_bookings'] - end($canceledBookings);
+        $dates[] = $booking['date'];
+        $totalBookingsData[] = (int)$booking['total'];
+        $confirmedBookingsData[] = (int)$booking['confirmed'];
+        $canceledBookingsData[] = (int)$booking['canceled'];
     }
 
-    // Convert data to JSON for JavaScript
+    // Convert PHP arrays to JSON
     $datesJson = json_encode($dates);
-    $totalBookingsJson = json_encode($totalBookings);
-    $confirmedBookingsJson = json_encode($confirmedBookings);
-    $canceledBookingsJson = json_encode($canceledBookings);
+    $totalBookingsJson = json_encode($totalBookingsData);
+    $confirmedBookingsJson = json_encode($confirmedBookingsData);
+    $canceledBookingsJson = json_encode($canceledBookingsData);
 
     // ======== To calculate increase or decrease ========
 
     // === Total Rooms ===
 
     // Current Period
-    $currentDateCondition = "WHERE DATE(booking_date) = CURDATE()";
-    $sqlTotalRoomsCurrent = "SELECT COUNT(id) AS total_rooms FROM rooms $currentDateCondition";
+    $currentDateCondition = "WHERE DATE(b.booking_date) = CURDATE()";
+
+    $sqlTotalRoomsCurrent = "
+                            SELECT COUNT(DISTINCT r.id) AS total_rooms
+                            FROM rooms r
+                            LEFT JOIN booking b ON r.id = b.class_id
+                            $currentDateCondition
+                            ";
+
     $currentTotalRoomsStmt = $db->prepare($sqlTotalRoomsCurrent);
     $currentTotalRoomsStmt->execute();
     $currentTotalRooms = $currentTotalRoomsStmt->fetch(PDO::FETCH_ASSOC)['total_rooms'] ?? 0;
 
     // Previous Period
-    $previousDateCondition = "WHERE DATE(booking_date) = CURDATE() - INTERVAL 1 DAY";
-    $sqlTotalRoomsPrevious = "SELECT COUNT(id) AS total_rooms FROM rooms $previousDateCondition";
+    $previousDateCondition = "WHERE DATE(b.booking_date) = CURDATE() - INTERVAL 1 DAY";
+    $sqlTotalRoomsPrevious = "
+                            SELECT COUNT(DISTINCT r.id) AS total_rooms
+                            FROM rooms r
+                            LEFT JOIN booking b ON r.id = b.class_id
+                            $previousDateCondition
+                            ";
     $previousTotalRoomsStmt = $db->prepare($sqlTotalRoomsPrevious);
     $previousTotalRoomsStmt->execute();
     $previousTotalRooms = $previousTotalRoomsStmt->fetch(PDO::FETCH_ASSOC)['total_rooms'] ?? 0;
@@ -212,17 +210,6 @@ try {
         <!-- ======= Main Content ======= -->
         <main id="dashboard" class="col-12 col-md-9 col-lg-10">
 
-            <?php
-            // Cards
-            $filterTotalRooms = isset($_POST['filterTotalRooms']) ? $_POST['filterTotalRooms'] : "Today";
-            $filterAvailableRooms = isset($_POST['filterAvailableRooms']) ? $_POST['filterAvailableRooms'] : "Today";
-            $filterAverageRating = isset($_POST['filterAverageRating']) ? $_POST['filterAverageRating'] : "Today";
-
-            // Reports
-            $filterBookingReport = isset($_POST['filterBookingReport']) ? $_POST['filterBookingReport'] : "Today";
-            $filterDonutChart = isset($_POST['filterDonutChart']) ? $_POST['filterDonutChart'] : "This Year";
-            ?>
-
             <div class="row">
 
                 <!-- Left side column -->
@@ -237,20 +224,9 @@ try {
 
                                 <!-- Filter -->
                                 <form method="POST">
-                                    <div class="filter">
-                                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                            <li class="dropdown-header text-start">
-                                                <h6>Filter</h6>
-                                            </li>
-                                            <li><button type="submit" class="dropdown-item" name="filterTotalRooms" value="Today">Today</button></li>
-                                            <li><button type="submit" class="dropdown-item" name="filterTotalRooms" value="This Month">This Month</button></li>
-                                            <li><button type="submit" class="dropdown-item" name="filterTotalRooms" value="This Year">This Year</button></li>
-                                        </ul>
-                                    </div>
                                 </form>
 
-                                <h5 class="card-title mt-3 text-start mx-4">Total Rooms <span>| <?php echo htmlspecialchars($filterTotalRooms); ?></span></h5>
+                                <h5 class="card-title mt-3 text-start mx-4">Total Rooms</h5>
                                 <div class="p-3">
                                     <div class="d-flex justify-content-left align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -274,22 +250,7 @@ try {
                         <div class="col">
                             <div class="card text-center shadow-sm ava-room">
 
-                                <!-- Filter -->
-                                <form method="POST">
-                                    <div class="filter">
-                                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                            <li class="dropdown-header text-start">
-                                                <h6>Filter</h6>
-                                            </li>
-                                            <li><button type="submit" class="dropdown-item" name="filterAvailableRooms" value="Today">Today</button></li>
-                                            <li><button type="submit" class="dropdown-item" name="filterAvailableRooms" value="This Month">This Month</button></li>
-                                            <li><button type="submit" class="dropdown-item" name="filterAvailableRooms" value="This Year">This Year</button></li>
-                                        </ul>
-                                    </div>
-                                </form>
-
-                                <h5 class="card-title mt-3 text-start mx-4">Available Rooms <span>| <?php echo htmlspecialchars($filterAvailableRooms); ?></span></h5>
+                                <h5 class="card-title mt-3 text-start mx-4">Available Rooms</h5>
                                 <div class="p-3">
                                     <div class="d-flex justify-content-left align-items-center">
                                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
@@ -312,22 +273,8 @@ try {
                         <!-- Most Booked Room -->
                         <div class="col">
                             <div class="card text-center shadow-sm avg-rating">
-                                <!-- Filter -->
-                                <form method="POST">
-                                    <div class="filter">
-                                        <a type="button" class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                            <li class="dropdown-header text-start">
-                                                <h6>Filter</h6>
-                                            </li>
-                                            <li><button type="submit" class="dropdown-item" name="filterAverageRating" value="Today">Today</button></li>
-                                            <li><button type="submit" class="dropdown-item" name="filterAverageRating" value="This Month">This Month</button></li>
-                                            <li><button type="submit" class="dropdown-item" name="filterAverageRating" value="This Year">This Year</button></li>
-                                        </ul>
-                                    </div>
-                                </form>
 
-                                <h5 class="card-title mt-3 text-start mx-4">Most Booked Room <span>| <?php echo htmlspecialchars($filterAverageRating); ?></span></h5>
+                                <h5 class="card-title mt-3 text-start mx-4">Most Booked Room</h5>
                                 <div class="p-3">
                                     <div class="d-flex justify-content-left align-items-center">
                                         <!-- Icon -->
@@ -344,79 +291,13 @@ try {
 
                     </div> <!-- End of Cards -->
 
-
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="card-title">Booking Report</h5>
                                 <div id="bookingLineChart"></div>
 
-                                <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-                                <script>
-                                    document.addEventListener("DOMContentLoaded", () => {
-                                        // Use PHP data for chart
-                                        const totalBookings = <?php echo $totalBookingsJson; ?>;
-                                        const confirmedBookings = <?php echo $confirmedBookingsJson; ?>;
-                                        const canceledBookings = <?php echo $canceledBookingsJson; ?>;
-                                        const dates = <?php echo $datesJson; ?>;
-
-                                        // Initialize the chart
-                                        const chart = new ApexCharts(document.querySelector("#bookingLineChart"), {
-                                            series: [{
-                                                    name: 'Total Bookings',
-                                                    data: totalBookings,
-                                                },
-                                                {
-                                                    name: 'Confirmed Bookings',
-                                                    data: confirmedBookings,
-                                                },
-                                                {
-                                                    name: 'Canceled Bookings',
-                                                    data: canceledBookings,
-                                                }
-                                            ],
-                                            chart: {
-                                                height: 350,
-                                                type: 'area',
-                                                toolbar: {
-                                                    show: false
-                                                },
-                                            },
-                                            markers: {
-                                                size: 4
-                                            },
-                                            colors: ['#6486ed', '#adf58b', '#ff8686'],
-                                            fill: {
-                                                type: "gradient",
-                                                gradient: {
-                                                    shadeIntensity: 1,
-                                                    opacityFrom: 0.3,
-                                                    opacityTo: 0.4,
-                                                    stops: [0, 90, 100]
-                                                }
-                                            },
-                                            dataLabels: {
-                                                enabled: false
-                                            },
-                                            stroke: {
-                                                curve: 'smooth',
-                                                width: 2
-                                            },
-                                            xaxis: {
-                                                type: 'datetime',
-                                                categories: dates.map(date => new Date(date).toISOString()) // Convert dates to ISO format
-                                            },
-                                            tooltip: {
-                                                x: {
-                                                    format: 'dd/MM/yyyy'
-                                                },
-                                            }
-                                        });
-
-                                        chart.render();
-                                    });
-                                </script>
+                                <script src="../js/bookingLineChart.js"></script>
                             </div>
                         </div>
                     </div>
@@ -433,7 +314,7 @@ try {
                     $totalBookings = $totalBookingsStatement->fetchColumn();
 
                     // Confirmed Bookings
-                    $sqlConfirmedBookings = "SELECT COUNT(*) FROM booking WHERE LOWER(booking_status) = 'confirmed'";
+                    $sqlConfirmedBookings = "SELECT COUNT(*) FROM booking WHERE LOWER(booking_status) = 'active'";
                     $confirmedBookingsStatement = $db->prepare($sqlConfirmedBookings);
                     $confirmedBookingsStatement->execute();
                     $confirmedBookings = $confirmedBookingsStatement->fetchColumn();
@@ -447,32 +328,19 @@ try {
 
                     <!-- Booking Donut Chart Report -->
                     <div class="card shadow-sm mb-3">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
 
                         <div class="card-body pb-0">
-                            <h5 class="card-title">Booking Report <span>| This Year</span></h5>
+                            <h5 class="card-title">Booking Report</h5>
 
                             <div id="bookingDonutChart" style="min-height: 400px;" class="echart"
-                                data-total="<?= $totalBookings ?>"
-                                data-confirmed="<?= $confirmedBookings ?>"
-                                data-canceled="<?= $canceledBookings ?>">
+                                data-total="<?= htmlspecialchars($totalBookings) ?>"
+                                data-confirmed="<?= htmlspecialchars($confirmedBookings) ?>"
+                                data-canceled="<?= htmlspecialchars($canceledBookings) ?>">
                             </div>
 
                             <script src="../js/bookingDonutChart.js"></script>
                         </div>
                     </div> <!-- Booking Donut Chart Report -->
-
 
                     <?php
                     // Available Rooms
@@ -500,20 +368,9 @@ try {
 
                     <!-- Room Occupancy Pie Chart Report -->
                     <div class="card shadow-sm mb-3">
-                        <div class="filter">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                                <li class="dropdown-header text-start">
-                                    <h6>Filter</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">Today</a></li>
-                                <li><a class="dropdown-item" href="#">This Month</a></li>
-                                <li><a class="dropdown-item" href="#">This Year</a></li>
-                            </ul>
-                        </div>
 
                         <div class="card-body pb-0">
-                            <h5 class="card-title">Room Occupancy <span>| This Year</span></h5>
+                            <h5 class="card-title">Room Occupancy</h5>
 
                             <div id="occupancyChart" style="min-height: 400px;" class="echart"
                                 data-total="<?= $totalRooms ?>"
