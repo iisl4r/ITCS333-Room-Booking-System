@@ -28,7 +28,7 @@
             ?>
                 <li><a href="../php/logout.php">Sign out</a></li>
             <?php else: ?>
-                <li><a href="../auth.html">Sign in</a></li>
+                <li><a href="../auth.php">Sign in</a></li>
             <?php endif; ?>
 
         </ul>
@@ -48,7 +48,7 @@
             </a>
         <?php else: ?>
             <!-- Sign In Link -->
-            <a href="../auth.html" class="sign-in">Sign in
+            <a href="../auth.php" class="sign-in">Sign in
                 <span class="material-symbols-sharp">
                     arrow_right_alt
                 </span>
