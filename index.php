@@ -4,12 +4,13 @@ session_start();
 // Check if the 'user' cookie exists
 if (!isset($_COOKIE['user'])) {
     // If the cookie is missing or expired, redirect to the authentication page
-    header("Location: /ITCS333-Room-Booking-System/auth.html");
+    header("Location: /ITCS333-Room-Booking-System/auth.php");
     exit();
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -56,11 +57,13 @@ if (!isset($_COOKIE['user'])) {
         }
     </style>
 </head>
+
 <body>
     <h1>Welcome to Our Website!</h1>
     <p>We're glad to have you here, <?= htmlspecialchars($_COOKIE['user']); ?>! Explore and enjoy your stay!</p>
-    
+
     <!-- Logout Button -->
     <a href="php/logout.php" class="logout-btn">Logout</a>
 </body>
+
 </html>
