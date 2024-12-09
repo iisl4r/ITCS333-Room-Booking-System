@@ -13,6 +13,5 @@ if (isset($_COOKIE['user'])) {
 }
 
 // Redirect to the login page with a logout message
-header("Location: /ITCS333-Room-Booking-System/auth.html");
+header("Location: /ITCS333-Room-Booking-System/auth.php");
 exit();
-?>
