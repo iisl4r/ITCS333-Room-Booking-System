@@ -3,7 +3,8 @@ session_start();
 // Check if the 'user' cookie exists
 if (!isset($_COOKIE['user'])) {
     // Cookie is missing or expired, redirect to the authentication page
-    header("Location: /ITCS333-Room-Booking-System/auth.html");
+    $_SESSION['previous_page'] = $_SERVER['REQUEST_URI'];
+    header("Location: /ITCS333-Room-Booking-System/auth.php");
     exit();
 }
 
