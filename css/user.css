@@ -1,0 +1,68 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+h2 {
+    color: #2F4DFA;
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+.userinput {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #fff;
+    padding: 40px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.userinput form label {
+    display: block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.userinput form input,
+.userinput form select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #E8E9FD;
+}
+
+.userinput form input[type="submit"] {
+    background-color:  #2F4DFA;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.imageInput{
+    display: none;
+}
+#profile-image{
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border:none;
+    object-fit: cover; 
+}
+#editPic{
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #2F4DFA;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 55px;
+            margin-left: 4.8%;
+            margin-bottom: 4%;
+}
