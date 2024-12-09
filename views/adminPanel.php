@@ -237,8 +237,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         <h1>Recent Feedback</h1>
                         <div class="fedback-1">
                             <div class="profile">
-                                <img src="../img/users/elon-musk.jpg" alt="Elon Musk">
-                                <div class="name">Elon Musk</div>
+                                <img src="../img/users/elon-musk.jpg" alt="Mohamed Salah">
+                                <div class="name">Mohamed Salah</div>
                             </div>
                             <div class="rating">
                                 <div class="rat-contr">
@@ -250,9 +250,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 </div>
                             </div>
                             <div class="review">
-                                Wi-Fi slower than a SpaceX rocket launch. Room was fine, but can we get a Tesla charger
-                                next
-                                time? 🚀🔋
+                                Room is clean, well-maintained, and comfortable.
                             </div>
                             <div class="date">Nov 17, 2024</div>
                         </div>
@@ -273,8 +271,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 </div>
                             </div>
                             <div class="review">
-                                Room was great, but where’s the gym? Also, the Wi-Fi? Not fast enough to stream Fast &
-                                Furious.
+                                Room is spacious, tidy, and equipped with all necessary facilities.
                             </div>
                             <div class="date">Nov 12, 2024</div>
                         </div>

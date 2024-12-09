@@ -4,8 +4,7 @@ session_start();
 
 // Include the database connection file
 require 'db.php';
-require 'footer.php';
-require 'header.php';
+
 
 // Check if the 'user' cookie exists
 if (!isset($_COOKIE['user'])) {
@@ -50,21 +49,26 @@ if ($user) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
-    <link rel="stylesheet" href="../user.css">
+    <link rel="stylesheet" href="../css/user.css">
 </head>
 
 <body>
+    <?php
+
+    include '../views/header.php';
+
+    ?>
     <h2>Edit Profile</h2>
     <div class="userinput">
         <!-- Form for editing the user profile -->
-        <form action="update.php" method="post" enctype="multipart/form-data">
+        <form action="../php/update.php" method="post" enctype="multipart/form-data">
             <div class="profileContainer">
                 <?php
                 // Display the user's current profile picture or a default picture if none exists
                 if (!empty($photo)) {
                     echo '<img src="' . htmlspecialchars($photo) . '" alt="Profile Picture" id="profile-image">';
                 } else {
-                    echo '<img src="../profile_pic.png" alt="Default Profile Picture" id="profile-image">';
+                    echo '<img src="../img/profile_pic.png" alt="Default Profile Picture" id="profile-image">';
                 }
                 ?>
             </div>
@@ -148,6 +152,8 @@ if ($user) {
             }
         });
     </script>
+    <?php
+    include '../views/footer.php'; ?>
 </body>
 
 </html>

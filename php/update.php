@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement = $db->prepare($sql);
         $statement->bindParam(':fname', $fname, PDO::PARAM_STR);
         $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-        $statement->execute();  
+        $statement->execute();
     } else {
         $_SESSION['fname_error'] = true; // Set error if validation fails
     }
@@ -101,23 +101,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $statement->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $statement->execute();
     }
-
 } else {
     // Display an error message if the request method is not POST
     echo "Invalid request method.";
 }
 
 // Check if there are no errors and set a success message
-if (empty($_SESSION['fname_error']) &&
+if (
+    empty($_SESSION['fname_error']) &&
     empty($_SESSION['phone_num_error']) &&
     empty($_SESSION['age_error']) &&
     empty($_SESSION['upload_error']) &&
     empty($_SESSION['fileSize_error']) &&
-    empty($_SESSION['fileType_error'])) {
+    empty($_SESSION['fileType_error'])
+) {
     $_SESSION['update_status'] = "Profile updated successfully.";
 }
 
 // Redirect back to the edit profile page
-header("Location: ../edit_profile.php");
+header("Location: ../php/edit_profile.php");
 ob_end_flush(); // Flush the output buffer and end buffering
-?>

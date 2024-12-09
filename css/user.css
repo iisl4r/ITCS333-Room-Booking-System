@@ -1,7 +1,7 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 20px;
+
     background-color: #f9f9f9;
 }
 
@@ -40,29 +40,32 @@ h2 {
 }
 
 .userinput form input[type="submit"] {
-    background-color:  #2F4DFA;
+    background-color: #2F4DFA;
     color: white;
     border: none;
     cursor: pointer;
 }
-.imageInput{
+
+.imageInput {
     display: none;
 }
-#profile-image{
+
+#profile-image {
     width: 220px;
     height: 220px;
     border-radius: 50%;
-    border:none;
-    object-fit: cover; 
+    border: none;
+    object-fit: cover;
 }
-#editPic{
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #2F4DFA;
-            color: white;
-            font-size: 16px;
-            border: none;
-            border-radius: 55px;
-            margin-left: 4.8%;
-            margin-bottom: 4%;
+
+#editPic {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #2F4DFA;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 55px;
+    margin-left: 4.8%;
+    margin-bottom: 4%;
 }
