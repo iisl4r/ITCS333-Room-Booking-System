@@ -68,7 +68,6 @@ try {
     foreach ($booking_data as $booking) {
         if (isset($rooms_data[$booking['room_id']])) {
             $rooms_data[$booking['room_id']]['total_bookings'] = $booking['total_bookings'];
-            // $rooms_data[$booking['room_id']]['occupancy_rate'] = $booking['occupancy_rate'];
         }
     }
 
@@ -179,16 +178,6 @@ try {
 
         <main id="dashboard" class="col-12 col-md-9 col-lg-10">
             <div class="row">
-
-                <!-- Overall Occupancy Rate -->
-                <!-- <div class="row mb-4">
-                    <div class="col-12 text-center">
-                        <p class="fs-5"><span class="fw-bold">Overall Occupancy Rate:</span> <?php echo number_format($overallOccupancyRate, 2) . "%"; ?></p>
-                        <p class="fs-4 fw-normal">
-
-                        </p>
-                    </div>
-                </div> -->
 
                 <!-- Departments -->
                 <div class="container">
