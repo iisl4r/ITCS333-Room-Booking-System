@@ -14,7 +14,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: /ITCS333-Room-Booking-System/index.php");
     exit();
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,7 +149,6 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
                                 <div class="manager">Total Bookings</div>
 
-
                             </div>
                         </div>
                     </div>
@@ -198,8 +196,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                         b.class_id 
                         FROM booking b
                         JOIN users u ON b.user_id = u.id
-                        WHERE b.booking_date >= CURDATE()
-                        ORDER BY b.booking_date, b.start_time ASC";
+                        WHERE b.booking_date >= CURDATE()    
+                        ";
 
                         $stmt = $db->prepare($query);
                         $stmt->execute();
@@ -221,7 +219,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
                                 ?>
                                 <div class="booking <?= $statusClass ?>">
                                     <div class="room">
-                                        Room <?= chr(64 + $booking['class_id']) ?> -
+                                        Room <?= $booking['class_id'] ?> -
                                         <?= date("d M, g:i A", strtotime($booking['booking_date'] . ' ' . $booking['start_time'])) ?>
                                     </div>
                                     <div class="status"><?= $statusText ?></div>

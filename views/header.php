@@ -11,7 +11,7 @@
         <ul>
 
             <li><a href="#">Home</a></li>
-            <li><a href="#">Browse Rooms</a></li>
+            <li><a href="/ITCS333-Room-Booking-System/php/rooms.php">Browse Rooms</a></li>
             <li><a href="#">My Bookings</a></li>
             <!-- Show Admin Panel only if the user is an admin -->
             <?php

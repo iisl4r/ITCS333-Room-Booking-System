@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $startTime = $_POST['startTime'] ?? null;
     $endTime = $_POST['endTime'] ?? null;
     $roomStatus = $_POST['roomStatus'] ?? null;
+    $roomFloor = preg_replace('/\D/', '', $roomFloor);
 
     // Validate required fields
     if (!$department || !$capacity || !$equipment || !$roomFloor || !$startTime || !$endTime || !$roomStatus || !$roomNumber) {

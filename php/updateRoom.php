@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $endTime = $_POST['endTime'];
     $roomNumber = $_POST['roomNumber'];
     $roomStatus = $_POST['roomStatus'];
+    $roomFloor = preg_replace('/\D/', '', $roomFloor);
 
     // Prepare SQL to update the room details
     $query = "UPDATE rooms SET 
