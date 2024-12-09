@@ -1,9 +1,18 @@
 <?php
 session_start();
+
+$roomNumber = isset($_POST['class']) ? htmlspecialchars($_POST['class']) : '';
+
+if (empty($roomNumber)) {
+    $_SESSION['missing_room'] = 'Missing room number';
+    header('Location: ../booking.php');
+    exit;
+}
+
 require 'db.php';
 //insure the user is logged in
-if (!isset($_COOKIE['user'])) {
-    header("..\auth.php");
+if (!isset($_SESSION['user_id'])) {
+    header("Location: ..\auth.php");
     exit;
 }
 //insure the user input all data
@@ -11,10 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
     if (empty($_POST['date']) || empty($_POST['time']) || empty($_POST['duration'])) {
         die('please fill all fileds');
     }
-
 }
-$date = ($_POST['date']);
-$time = ($_POST['time']);
+$date = $_POST['date'];
+$time = $_POST['time'];
 $duration = intval($_POST['duration']);
 $class = $_POST['class'];
 
@@ -30,14 +38,14 @@ if (strtotime($date) === strtotime($currentDate) && strtotime($time) < strtotime
     $_SESSION["time_error"] = true;
 }
 //insure booking is between the room available slots
-$s = $db->prepare("SELECT * FROM rooms WHERE id=:id");
+$s = $db->prepare("SELECT * FROM rooms WHERE room_number = :id");
 $s->execute([":id" => $class]);
 $room = $s->fetch(PDO::FETCH_ASSOC);
 //room's available slots is between $start and $end
 $start = strtotime($room['available_start']);
 $end = strtotime($room['available_end']);
 $input_start = strtotime($time);
-$input_end = $input_start + ($duration * 60);
+$input_end = $input_start + $duration * 60;
 if ($input_start < $start || $input_end > $end) {
     $_SESSION["time_error"] = true;
 }
@@ -48,7 +56,7 @@ if (isset($_SESSION["time_error"]) || isset($_SESSION['date_error'])) {
 }
 
 //rerieve records from database 
-$query = $db->prepare("SELECT * FROM booking WHERE class_id = :classId and booking_date= :inputDate");
+$query = $db->prepare("SELECT * FROM booking WHERE class_id = :classId and booking_date = :inputDate");
 $query->execute([":classId" => $class, ":inputDate" => $date]);
 $data = $query->fetchAll(PDO::FETCH_ASSOC);
 
@@ -67,7 +75,6 @@ if (!empty($data)) {
             $conflict = true;
             break;
         }
-
     }
 }
 
@@ -76,6 +83,7 @@ if ($conflict) {
     header("Location: ../booking.php");
     exit;
 } else {
+
     //adding to database
     $time = new DateTime($time);
     $time = $time->format('H:i:s'); //convert time to format 'HH:MM:SS'
@@ -97,5 +105,3 @@ if ($conflict) {
     header("Location: ../booking.php");
     exit;
 }
-
-?>

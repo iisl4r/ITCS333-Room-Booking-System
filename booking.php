@@ -1,10 +1,9 @@
 <?php
 session_start();
-if (!isset($_COOKIE['user'])) {
-    header("Location:auth.php");
+if (!isset($_SESSION['user_id'])) {
+    header("Location: auth.php");
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -41,13 +40,20 @@ if (!isset($_COOKIE['user'])) {
                             <input type="date" name="date" id="date" class="form-control" required>
                         </div>
                         <?php
+                        if (isset($_SESSION['missing_room'])) {
+                            $error = $_SESSION['missing_room'];
+                            echo "<p style='color:red';>$error</p>";
+                        }
+
                         if (isset($_SESSION['date_error'])) {
                             echo "<p style='color:red';>please input valid date</p>";
                             unset($_SESSION['date_error']);
                         }
-
                         ?>
-                        <input type='hidden' name='class' value="<?php echo $_POST['room_number']; ?>">
+
+                        <input type='hidden' name='class'
+                            value="<?php echo isset($_POST['room_number']) ? htmlspecialchars($_POST['room_number']) : ''; ?>">
+
                         <!-- Select Time -->
                         <div class="mb-3">
                             <label for="time" class="form-label">Select Time (8:00 AM - 9:00 PM)</label>
