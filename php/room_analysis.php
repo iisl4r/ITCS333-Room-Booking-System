@@ -1,7 +1,14 @@
 <?php
-require 'db.php';
+session_start();
 
 try {
+    require "db.php";
+
+    if (!isset($_SESSION['user_id'])) {
+        header("Location:../auth.php");
+        exit;
+    }
+
     // Fetching rooms details
     $sql = "SELECT * FROM rooms";
     $statement = $db->prepare($sql);
@@ -24,7 +31,7 @@ try {
     // Get number of equipment for each room
     $sql_equipments = "
     SELECT id AS room_id, room_number, 
-           (CASE WHEN equipments IS NOT NULL AND equipments != '' 
+           (CASE WHEN equipments IS NOT NULL AND equipments != ''
                  THEN (LENGTH(equipments) - LENGTH(REPLACE(equipments, ',', '')) + 1) 
                  ELSE 0 
             END) AS num_of_equipments
@@ -34,7 +41,7 @@ try {
     $statement->execute();
     $equipment_data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get total bookings and occupancy rate for each room
+    // Total Bookings for that user for every room
     $sql_bookings = "
     SELECT r.id AS room_id, r.room_number, 
            COUNT(b.id) AS total_bookings, 
@@ -45,9 +52,10 @@ try {
                0
            ) AS occupancy_rate
     FROM rooms r
-    LEFT JOIN booking b ON r.id = b.class_id
+    LEFT JOIN booking b ON r.room_number = b.class_id
     GROUP BY r.id;
     ";
+
     $statement = $db->prepare($sql_bookings);
     $statement->execute();
     $booking_data = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -60,9 +68,27 @@ try {
     foreach ($booking_data as $booking) {
         if (isset($rooms_data[$booking['room_id']])) {
             $rooms_data[$booking['room_id']]['total_bookings'] = $booking['total_bookings'];
-            $rooms_data[$booking['room_id']]['occupancy_rate'] = $booking['occupancy_rate'];
+            // $rooms_data[$booking['room_id']]['occupancy_rate'] = $booking['occupancy_rate'];
         }
     }
+
+    // Calculating overall occupancy for all users
+    $sql_overall_occupancy = "
+    SELECT 
+        COALESCE(
+            (SUM(TIMESTAMPDIFF(MINUTE, b.start_time, b.end_time)) /
+            (COUNT(DISTINCT r.id) * 780 * COUNT(DISTINCT DATE(b.start_time))) * 100),
+            0
+        ) AS overall_occupancy_rate
+    FROM rooms r
+    LEFT JOIN booking b ON r.room_number = b.class_id;
+    ";
+
+    $statement = $db->prepare($sql_overall_occupancy);
+    $statement->execute();
+    $overall_occupancy_data = $statement->fetch(PDO::FETCH_ASSOC);
+
+    $overall_occupancy_rate = $overall_occupancy_data['overall_occupancy_rate'] ?? 0;
 } catch (PDOException $e) {
     echo "Error while fetching the data: " . $e->getMessage();
     die;
@@ -83,6 +109,29 @@ try {
 
     <!-- Linking to CSS file for styling -->
     <link rel="stylesheet" href="../css/analysis.css">
+
+    <style>
+        .room-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .card {
+            overflow: hidden;
+            /* Ensures content stays within the card's boundaries */
+        }
+
+        .header-img {
+            margin-right: 15px;
+        }
+
+        .header {
+            margin-left: 50px;
+            margin-bottom: 20px;
+        }
+    </style>
+    </style>
 </head>
 
 <body>
@@ -116,7 +165,6 @@ try {
                 <!-- Departments -->
                 <div class="container">
                     <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
-
                         <!-- IS Department -->
                         <div class="is-department" class="col">
                             <div class="card mb-4 rounded-3 shadow-sm">
@@ -125,7 +173,7 @@ try {
                                 </div>
                             </div>
 
-                            <!-- ======= IS Rooms ======= -->
+                            <!-- IS Rooms -->
                             <?php if (!empty($departments["IS"])): ?>
                                 <?php foreach ($departments["IS"] as $room): ?>
                                     <?php
@@ -133,11 +181,8 @@ try {
                                     if (!$data) continue;
                                     ?>
                                     <div class="card shadow-sm mb-3">
-                                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                            <title>Placeholder</title>
-                                            <rect width="100%" height="100%" fill="#55595c"></rect>
-                                            <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
-                                        </svg>
+                                        <img src="../img/IS/<?php echo $room["room_number"]; ?>/IS_<?php echo $room["room_number"]; ?>_001.jpg"
+                                            alt="Room Image">
 
                                         <div class="card-body">
                                             <p class="card-text mb-1 fs-4 fw-bold text-primary"><?php echo $room["room_number"]; ?></p>
@@ -158,9 +203,9 @@ try {
                                             </p>
                                             <!-- Occupancy Rate -->
                                             <p class="fs-6 fw-bold">
-                                                Occupancy Rate:
+                                                Overall Occupancy Rate:
                                                 <span class="fw-normal">
-                                                    <?php echo number_format($data['occupancy_rate'], 2); ?>%
+                                                    <?php echo number_format($overall_occupancy_rate, 2); ?>%
                                                 </span>
                                             </p>
 
@@ -183,8 +228,8 @@ try {
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
-                        </div>
 
+                        </div>
 
                         <!-- CS Department -->
                         <div id="cs-department" class="col">
@@ -194,7 +239,7 @@ try {
                                 </div>
                             </div>
 
-                            <!-- ======= CS Rooms ======= -->
+                            <!-- CS Rooms -->
                             <?php if (!empty($departments["CS"])): ?>
                                 <?php foreach ($departments["CS"] as $room): ?>
                                     <?php
@@ -202,11 +247,8 @@ try {
                                     if (!$data) continue;
                                     ?>
                                     <div class="card shadow-sm mb-3">
-                                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                            <title>Placeholder</title>
-                                            <rect width="100%" height="100%" fill="#55595c"></rect>
-                                            <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
-                                        </svg>
+                                        <img src="../img/CS/<?php echo $room["room_number"]; ?>/CS_<?php echo $room["room_number"]; ?>_001.jpg"
+                                            alt="Room Image">
 
                                         <div class="card-body">
                                             <p class="card-text mb-1 fs-4 fw-bold text-primary"><?php echo $room["room_number"]; ?></p>
@@ -218,7 +260,6 @@ try {
                                                     <?php echo htmlspecialchars($data['total_bookings']); ?>
                                                 </span>
                                             </p>
-
                                             <!-- Number of Equipments -->
                                             <p class="fs-6 fw-bold">
                                                 Number of Equipments:
@@ -226,15 +267,15 @@ try {
                                                     <?php echo htmlspecialchars($data['num_of_equipments']); ?>
                                                 </span>
                                             </p>
-
                                             <!-- Occupancy Rate -->
                                             <p class="fs-6 fw-bold">
-                                                Occupancy Rate:
+                                                Overall Occupancy Rate:
                                                 <span class="fw-normal">
-                                                    <?php echo number_format($data['occupancy_rate'], 2); ?>%
+                                                    <?php echo number_format($overall_occupancy_rate, 2); ?>%
                                                 </span>
                                             </p>
 
+                                            <!-- Room Status -->
                                             <p class="fs-5 fw-bold">Status:
                                                 <span class="badge bg-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
                                                     <?php echo $room["room_status"]; ?>
@@ -263,7 +304,7 @@ try {
                                 </div>
                             </div>
 
-                            <!-- ======= NE Rooms ======= -->
+                            <!-- NE Rooms -->
                             <?php if (!empty($departments["NE"])): ?>
                                 <?php foreach ($departments["NE"] as $room): ?>
                                     <?php
@@ -271,11 +312,8 @@ try {
                                     if (!$data) continue;
                                     ?>
                                     <div class="card shadow-sm mb-3">
-                                        <svg class="bd-placeholder-img card-img-top" width="100%" height="225px" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                            <title>Placeholder</title>
-                                            <rect width="100%" height="100%" fill="#55595c"></rect>
-                                            <text x="50%" y="50%" fill="#eceeef" text-anchor="middle" alignment-baseline="middle">Thumbnail</text>
-                                        </svg>
+                                        <img src="../img/NE/<?php echo $room["room_number"]; ?>/NE_<?php echo $room["room_number"]; ?>_001.jpg"
+                                            alt="Room Image">
 
                                         <div class="card-body">
                                             <p class="card-text mb-1 fs-4 fw-bold text-primary"><?php echo $room["room_number"]; ?></p>
@@ -287,7 +325,6 @@ try {
                                                     <?php echo htmlspecialchars($data['total_bookings']); ?>
                                                 </span>
                                             </p>
-
                                             <!-- Number of Equipments -->
                                             <p class="fs-6 fw-bold">
                                                 Number of Equipments:
@@ -295,15 +332,15 @@ try {
                                                     <?php echo htmlspecialchars($data['num_of_equipments']); ?>
                                                 </span>
                                             </p>
-                                            
                                             <!-- Occupancy Rate -->
                                             <p class="fs-6 fw-bold">
-                                                Occupancy Rate:
+                                                Overall Occupancy Rate:
                                                 <span class="fw-normal">
-                                                    <?php echo number_format($data['occupancy_rate'], 2); ?>%
+                                                    <?php echo number_format($overall_occupancy_rate, 2); ?>%
                                                 </span>
                                             </p>
 
+                                            <!-- Room Status -->
                                             <p class="fs-5 fw-bold">Status:
                                                 <span class="badge bg-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
                                                     <?php echo $room["room_status"]; ?>
@@ -322,6 +359,7 @@ try {
                                     </div>
                                 <?php endforeach; ?>
                             <?php endif; ?>
+
                         </div>
                     </div>
                 </div>
