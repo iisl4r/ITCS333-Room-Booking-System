@@ -27,7 +27,15 @@ if (!isset($_SESSION['user_id'])) {
             <!-- Header -->
             <div class="text-center">
                 <h1>Booking a class</h1>
-                <p class="text-muted">you selected class <?php echo $_POST['room_number']; ?></p>
+                <p class="text-muted">
+                    <?php
+                    if (isset($_POST['class'])) {
+                        echo "You selected class " . htmlspecialchars($_POST['class']);
+                    } else {
+                        echo "No class selected. Please go back and select a class.";
+                    }
+                    ?>
+                </p>
             </div>
             <!-- Booking Form -->
             <div class="card shadow">
@@ -43,6 +51,7 @@ if (!isset($_SESSION['user_id'])) {
                         if (isset($_SESSION['missing_room'])) {
                             $error = $_SESSION['missing_room'];
                             echo "<p style='color:red';>$error</p>";
+                            unset($_SESSION['missing_room']);
                         }
 
                         if (isset($_SESSION['date_error'])) {
@@ -52,7 +61,7 @@ if (!isset($_SESSION['user_id'])) {
                         ?>
 
                         <input type='hidden' name='class'
-                            value="<?php echo isset($_POST['room_number']) ? htmlspecialchars($_POST['room_number']) : ''; ?>">
+                            value="<?php echo isset($_POST['class']) ? htmlspecialchars($_POST['class']) : ''; ?>">
 
                         <!-- Select Time -->
                         <div class="mb-3">
