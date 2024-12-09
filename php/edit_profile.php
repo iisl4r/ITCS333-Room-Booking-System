@@ -1,16 +1,17 @@
 <?php
-    // Start the session to access session variables
-    session_start();
+// Start the session to access session variables
+session_start();
 
-    // Include the database connection file
-    require 'db.php';
-    require 'footer.php';
-    require 'header.php';
+// Include the database connection file
+require 'db.php';
+require 'footer.php';
+require 'header.php';
 
-    // Check if the 'user' cookie exists
+// Check if the 'user' cookie exists
 if (!isset($_COOKIE['user'])) {
-    // If the cookie is missing or expired, redirect to the authentication page
-    header("Location: ../auth.html");
+    // Cookie is missing or expired, redirect to the authentication page
+    $_SESSION['previous_page'] = $_SERVER['REQUEST_URI'];
+    header("Location: /ITCS333-Room-Booking-System/auth.php");
     exit();
 }
 // Check if the user is logged in, otherwise redirect to the login page
@@ -44,12 +45,14 @@ if ($user) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Profile</title>
     <link rel="stylesheet" href="../user.css">
 </head>
+
 <body>
     <h2>Edit Profile</h2>
     <div class="userinput">
@@ -146,4 +149,5 @@ if ($user) {
         });
     </script>
 </body>
+
 </html>
