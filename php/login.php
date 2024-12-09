@@ -5,27 +5,42 @@ require 'db.php';
 // Check if the request method is POST (form submission)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Trim any extra spaces from the fname input
-    $fname = trim($_POST['fname']);
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
 
     // Check if both fname and password are provided
-    if (empty($fname) || empty($password)) {
+    if (empty($email) || empty($password)) {
         $_SESSION['login_msg'] = "Both name and password are required.";
         header("Location: ../auth.php");
         exit;
     }
 
-    // Validate that the fname only contains alphabet characters
-    if (!preg_match('/^[a-zA-Z]+$/', $fname)) {
-        $_SESSION['login_msg'] = "Invalid name format. Only alphabet characters are allowed.";
+    // Validate that the email is in the correct UoB format (using regex)
+    $emailPattern = '/^(\d{9})@(uob\.edu\.bh|stu\.uob\.edu\.bh)$/';
+    if (preg_match($emailPattern, $email, $matches)) {
+        $yearAndId = $matches[1];
+        $year = intval(substr($yearAndId, 0, 4));
+        $id = intval(substr($yearAndId, 4, 5));
+
+        if (
+            !($year >= 2015 && $year <= 2024) ||
+            !($id >= 1 && $id <= 11111)
+        ) {
+            $_SESSION['login_msg'] = "Invalid year or ID range in UoB email.";
+            header("Location: ../auth.php");
+            exit;
+        }
+    } else {
+        $_SESSION['login_msg'] = "Invalid UoB email format.";
         header("Location: ../auth.php");
         exit;
     }
 
+
     try {
-        // Prepare a SQL statement to fetch the user from the database by fname
-        $stmt = $db->prepare("SELECT * FROM users WHERE fname = :fname");
-        $stmt->execute([':fname' => $fname]);
+        // Prepare a SQL statement to fetch the user from the database by email
+        $stmt = $db->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute([':email' => $email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Check if a user was found and if the password matches
@@ -46,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             exit;
         } else {
-            $_SESSION['login_msg'] = "Invalid name or password.";
+            $_SESSION['login_msg'] = "Invalid email or password.";
             header("Location: ../auth.php");
             exit;
         }

@@ -69,9 +69,9 @@ session_start();
         </header>
         <form method="post" action="php/login.php">
             <div class="loginContainer">
-                <input type="text" name="fname" autocomplete="off" title="Enter your username" maxlength="50"
+                <input type="email" name="email" autocomplete="off" title="Enter your Email" maxlength="50"
                     placeholder=" " required>
-                <div class="labelline ll1">Enter your name</div>
+                <div class="labelline ll1">Enter your Email</div>
                 <i class='bx bxs-user ii1'></i>
                 <input type="password" name="password" title="Enter your password" maxlength="50" placeholder=" "
                     required>

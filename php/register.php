@@ -84,12 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     } catch (PDOException $e) {
         if ($e->getCode() == 23000) {
-            if (str_contains($e->getMessage(), 'fname')) {
-                $_SESSION['registration_error'] = "The name is already taken.";
-            } elseif (str_contains($e->getMessage(), 'email')) {
+            if (str_contains($e->getMessage(), 'email')) {
                 $_SESSION['registration_error'] = "The email is already registered.";
-            } else {
-                $_SESSION['registration_error'] = "A unique constraint violation occurred.";
             }
         } else {
             $_SESSION['registration_error'] = "An unexpected error occurred. Please try again later.";
