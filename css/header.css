@@ -135,6 +135,7 @@ header .material-symbols-sharp {
     display: flex;
     gap: 60px;
     list-style: none;
+    margin-bottom: 0;
 }
 
 .nav-links a {
