@@ -1,0 +1,24 @@
+input{
+    margin-bottom: 1rem;
+}
+.empty{
+    color: red;
+    text-align: center;
+    font-size: xx-large;
+    margin-top: 20%;
+}
+.card.shadow-sm{
+    background-color: #f1f1f3;
+}
+h1{
+    color: #2F4DFA;
+
+}
+.btn.btn-primary.btn-sm{
+    background-color: #2F4DFA;
+}
+.card-title{
+    text-align: center;
+    
+}
+
