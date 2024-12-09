@@ -2,6 +2,12 @@
 require "db.php";
 require 'updateStatus.php';
 session_start();
+if (!isset($_COOKIE['user'])) {
+    // Cookie is missing or expired, redirect to the authentication page
+    $_SESSION['previous_page'] = $_SERVER['REQUEST_URI'];
+    header("Location: /ITCS333-Room-Booking-System/auth.php");
+    exit();
+}
 
 function determineRoomStatus($db, $roomId)
 {
@@ -105,8 +111,10 @@ function formatTime($time)
                                 <p class="fs-5"><strong>Department:</strong> <?php echo $room["department"]; ?></p>
                                 <p class="fs-5"><strong>Floor:</strong> <?php echo $room["room_floor"]; ?></p>
                                 <p class="fs-5"><strong>Capacity:</strong> <?php echo $room["capacity"]; ?> people</p>
-                                <p class="fs-5"><strong>Available From:</strong> <?php echo formatTime($room["available_start"]); ?></p>
-                                <p class="fs-5"><strong>Available Until:</strong> <?php echo formatTime($room["available_end"]); ?></p>
+                                <p class="fs-5"><strong>Available From:</strong>
+                                    <?php echo formatTime($room["available_start"]); ?></p>
+                                <p class="fs-5"><strong>Available Until:</strong>
+                                    <?php echo formatTime($room["available_end"]); ?></p>
                             </div>
                         </div>
 
@@ -171,7 +179,7 @@ function formatTime($time)
                                         $equipment = trim($equipment);
                                         // Get the corresponding icon or fallback icon
                                         $icon_class = $equipment_icons[$equipment] ?? 'bi-question-circle';
-                                    ?>
+                                        ?>
                                         <li class="list-group-item d-flex align-items-center mb-3 bg-light rounded">
                                             <i class="<?php echo $icon_class; ?> text-primary me-3 fs-4"></i>
                                             <span
