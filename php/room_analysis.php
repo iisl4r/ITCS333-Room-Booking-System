@@ -72,23 +72,41 @@ try {
         }
     }
 
-    // Calculating overall occupancy for all users
-    $sql_overall_occupancy = "
+    // ======== Occupancy Rate ========
+
+    $sqlRoomsOccupancy = "
     SELECT 
-        COALESCE(
-            (SUM(TIMESTAMPDIFF(MINUTE, b.start_time, b.end_time)) /
-            (COUNT(DISTINCT r.id) * 780 * COUNT(DISTINCT DATE(b.start_time))) * 100),
-            0
-        ) AS overall_occupancy_rate
+        r.id AS room_id,
+        r.room_number,
+        LOWER(r.room_status) AS room_status,
+        IFNULL(SUM(TIMESTAMPDIFF(MINUTE, b.start_time, b.end_time)), 0) AS occupied_minutes,
+        780 AS total_minutes_per_day -- Assuming 13 hours of availability
     FROM rooms r
-    LEFT JOIN booking b ON r.room_number = b.class_id;
+    LEFT JOIN booking b ON r.room_number = b.class_id
+    GROUP BY r.id;
     ";
 
-    $statement = $db->prepare($sql_overall_occupancy);
-    $statement->execute();
-    $overall_occupancy_data = $statement->fetch(PDO::FETCH_ASSOC);
+    $roomsOccupancyStatement = $db->prepare($sqlRoomsOccupancy);
+    $roomsOccupancyStatement->execute();
+    $roomsData = $roomsOccupancyStatement->fetchAll(PDO::FETCH_ASSOC);
 
-    $overall_occupancy_rate = $overall_occupancy_data['overall_occupancy_rate'] ?? 0;
+    $roomsOccupancyRates = [];
+
+    foreach ($roomsData as $room) {
+        $occupiedMinutes = $room['occupied_minutes'];
+        $totalMinutesPerDay = $room['total_minutes_per_day'];
+
+        // Calculate occupancy rate
+        $occupancyRate = $totalMinutesPerDay > 0 ? ($occupiedMinutes / $totalMinutesPerDay) * 100 : 0;
+
+        // Add the result for each room
+        $roomsOccupancyRates[] = [
+            'room_number' => $room['room_number'],
+            'room_status' => $room['room_status'],
+            'occupied_minutes' => $occupiedMinutes,
+            'occupancy_rate' => number_format($occupancyRate, 2) // Format to 2 decimal places
+        ];
+    }
 } catch (PDOException $e) {
     echo "Error while fetching the data: " . $e->getMessage();
     die;
@@ -162,6 +180,16 @@ try {
         <main id="dashboard" class="col-12 col-md-9 col-lg-10">
             <div class="row">
 
+                <!-- Overall Occupancy Rate -->
+                <!-- <div class="row mb-4">
+                    <div class="col-12 text-center">
+                        <p class="fs-5"><span class="fw-bold">Overall Occupancy Rate:</span> <?php echo number_format($overallOccupancyRate, 2) . "%"; ?></p>
+                        <p class="fs-4 fw-normal">
+
+                        </p>
+                    </div>
+                </div> -->
+
                 <!-- Departments -->
                 <div class="container">
                     <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
@@ -205,7 +233,13 @@ try {
                                             <p class="fs-6 fw-bold">
                                                 Overall Occupancy Rate:
                                                 <span class="fw-normal">
-                                                    <?php echo number_format($overall_occupancy_rate, 2); ?>%
+                                                    <?php
+                                                    foreach ($roomsOccupancyRates as $roomOccupancyRate) {
+                                                        if ($roomOccupancyRate['room_number'] == $room["room_number"]) {
+                                                            echo $roomOccupancyRate['occupancy_rate'] . "%";
+                                                        }
+                                                    }
+                                                    ?>
                                                 </span>
                                             </p>
 
@@ -271,7 +305,13 @@ try {
                                             <p class="fs-6 fw-bold">
                                                 Overall Occupancy Rate:
                                                 <span class="fw-normal">
-                                                    <?php echo number_format($overall_occupancy_rate, 2); ?>%
+                                                    <?php
+                                                    foreach ($roomsOccupancyRates as $roomOccupancyRate) {
+                                                        if ($roomOccupancyRate['room_number'] == $room["room_number"]) {
+                                                            echo $roomOccupancyRate['occupancy_rate'] . "%";
+                                                        }
+                                                    }
+                                                    ?>
                                                 </span>
                                             </p>
 
@@ -336,7 +376,13 @@ try {
                                             <p class="fs-6 fw-bold">
                                                 Overall Occupancy Rate:
                                                 <span class="fw-normal">
-                                                    <?php echo number_format($overall_occupancy_rate, 2); ?>%
+                                                    <?php
+                                                    foreach ($roomsOccupancyRates as $roomOccupancyRate) {
+                                                        if ($roomOccupancyRate['room_number'] == $room["room_number"]) {
+                                                            echo $roomOccupancyRate['occupancy_rate'] . "%";
+                                                        }
+                                                    }
+                                                    ?>
                                                 </span>
                                             </p>
 
