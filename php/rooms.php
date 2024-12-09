@@ -116,9 +116,9 @@ try {
 
 <body>
     <!-- Header -->
-    <div class="header">
-        <?php include "../views/header.php" ?>
-    </div>
+
+    <?php include "../views/header.php" ?>
+
 
     <!-- Departments -->
     <div class="container">

@@ -74,10 +74,11 @@ function formatTime($time)
 </head>
 
 <body>
+    <!-- Header -->
+    <?php include "../views/header.php" ?>
     <div class="container py-4">
 
-        <!-- Header -->
-        <?php include "../views/header.php" ?>
+
 
         <!-- May need some styling -->
         <div class="p-3 mb-4 bg-body-tertiary rounded-3">

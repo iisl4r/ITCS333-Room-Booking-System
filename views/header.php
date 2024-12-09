@@ -10,7 +10,7 @@
     <nav class="nav-links">
         <ul>
 
-            <li><a href="/ITCS333-Room-Booking-System/php/upcoming_past_bookings.php">Home</a></li>
+            <li><a href="/ITCS333-Room-Booking-System/php/analysis.php">Home</a></li>
             <li><a href="/ITCS333-Room-Booking-System/php/rooms.php">Browse Rooms</a></li>
             <li><a href="/ITCS333-Room-Booking-System/php/upcoming_past_bookings.php">My Bookings</a></li>
             <li><a href="/ITCS333-Room-Booking-System/php/edit_profile.php">Profile Management</a></li>
