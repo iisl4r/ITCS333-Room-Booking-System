@@ -93,7 +93,7 @@ function formatTime($time)
                 <h1 class="display-5 fw-bold text-center"><?php echo $room["room_number"]; ?> | Room Details</h1>
 
                 <!-- Room Status -->
-                <h5 class="text-center card-subtitle my-3 text-muted">Status:
+                <h5 class="text-center card-subtitle my-3 text-muted">Current Status:
                     <span class="badge bg-<?php echo ($room["room_status"] == "Available") ? "success" : "danger"; ?>">
                         <?php echo $room["room_status"]; ?>
                     </span>
@@ -252,7 +252,10 @@ function formatTime($time)
                             <button type="submit" class="btn btn-success me-2">Book Now!</button>
                         </form>
                     <?php else: ?>
-                        <button type="button" class="btn btn-danger me-2" disabled>Room is occupied</button>
+                        <form action="../booking.php" method="POST">
+                            <input type="hidden" name="class" value="<?php echo $room['room_number']; ?>">
+                            <button type="submit" class="btn btn-danger me-2">Book for future?</button>
+                        </form>
                     <?php endif; ?>
                 </div>
             </div>

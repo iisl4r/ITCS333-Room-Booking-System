@@ -106,7 +106,7 @@ if ($user) {
             <input type="tel" id="phoneNum" name="phone_num" value="<?php echo htmlspecialchars($phone_num); ?>">
             <?php
             if (!empty($_SESSION['phone_num_error'])) {
-                echo "<p>Invalid phone number format.</p>";
+                echo "<p style='color:red;'>Invalid format, it should start with +973 followed by your number</p>";
                 unset($_SESSION['phone_num_error']); // Clear error after displaying
             }
             ?>
@@ -118,7 +118,7 @@ if ($user) {
             <input type="number" id="age" name="age" value="<?php echo htmlspecialchars($age); ?>">
             <?php
             if (!empty($_SESSION['age_error'])) {
-                echo "<p>Invalid age.</p>";
+                echo "<p style='color:red;'>Invalid age.</p>";
                 unset($_SESSION['age_error']); // Clear error after displaying
             }
             ?>
@@ -129,7 +129,7 @@ if ($user) {
             <?php
             // Display a success message after updating the profile
             if (!empty($_SESSION['update_status'])) {
-                echo "<p>" . $_SESSION['update_status'] . "</p>";
+                echo "<p style='color: green;'>" . $_SESSION['update_status'] . "</p>";
                 unset($_SESSION['update_status']); // Clear status after displaying
             }
             ?>

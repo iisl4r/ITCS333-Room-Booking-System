@@ -148,7 +148,7 @@ try {
 
                             <div class="card-body">
                                 <p class="card-text mb-1">Room: <?php echo $room["room_number"]; ?></p>
-                                <p class="card-text mb-1">Status: <span
+                                <p class="card-text mb-1">Current Status: <span
                                         class="<?php echo ($room["room_status"] == "Available") ? "text-success" : "text-danger"; ?>">
                                         <?php echo $room["room_status"]; ?></span></p>
 
@@ -185,7 +185,7 @@ try {
 
                             <div class="card-body">
                                 <p class="card-text mb-1">Room: <?php echo $room["room_number"]; ?></p>
-                                <p class="card-text mb-1">Status: <span
+                                <p class="card-text mb-1">Current Status: <span
                                         class="<?php echo ($room["room_status"] == "Available") ? "text-success" : "text-danger"; ?>">
                                         <?php echo $room["room_status"]; ?></span></p>
 
@@ -221,7 +221,7 @@ try {
 
                             <div class="card-body">
                                 <p class="card-text mb-1">Room: <?php echo $room["room_number"]; ?></p>
-                                <p class="card-text mb-1">Status: <span
+                                <p class="card-text mb-1">Current Status: <span
                                         class="<?php echo ($room["room_status"] == "Available") ? "text-success" : "text-danger"; ?>">
                                         <?php echo $room["room_status"]; ?></span></p>
 

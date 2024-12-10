@@ -57,7 +57,8 @@ if (!isset($_COOKIE['user'])) {
                         }
 
                         if (isset($_SESSION['date_error'])) {
-                            echo "<p style='color:red';>please input valid date</p>";
+                            $error = $_SESSION['date_error'];
+                            echo "<p style='color:red';>$error</p>";
                             unset($_SESSION['date_error']);
                         }
                         ?>
@@ -72,7 +73,8 @@ if (!isset($_COOKIE['user'])) {
                         </div>
                         <?php
                         if (isset($_SESSION['time_error'])) {
-                            echo "<p style='color:red;'>please input valid time </p>";
+                            $error = $_SESSION['time_error'];
+                            echo "<p style='color:red;'>$error</p>";
                             unset($_SESSION['time_error']);
                         }
 
@@ -90,7 +92,8 @@ if (!isset($_COOKIE['user'])) {
                         </div>
                         <?php
                         if (isset($_SESSION['time_conflic'])) {
-                            echo "<p style='color:red;'>please input valid date, there is a conflict</p>";
+                            $error = $_SESSION['time_conflic'];
+                            echo "<p style='color:red;'>$error</p>";
                             unset($_SESSION['time_conflic']);
                         }
                         if (isset($_SESSION['successful_booking'])) {

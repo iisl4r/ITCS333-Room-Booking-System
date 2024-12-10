@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validate and update the user's phone number
-    if (preg_match('/^\+973?\d{8}$/', $_POST['phone_num'])) { // Check for valid phone number format
+    if(preg_match('/^\+973(33|34|35|36|37|38|39)\d{6}$/', $_POST['phone_num'])) { // Check for valid phone number format
         $phone_num = trim($_POST['phone_num']); // Remove unnecessary whitespace
         $sql = 'UPDATE users SET phone_num = :phone_num WHERE id = :user_id';
         $statement = $db->prepare($sql);
